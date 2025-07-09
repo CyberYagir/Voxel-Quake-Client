@@ -1,0 +1,379 @@
+{
+  "Items": [
+    {
+      "ID": "bloodrun_map_lamp_1",
+      "Position": {
+        "x": 10.788,
+        "y": 16.53,
+        "z": 12.2
+      },
+      "Rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "Data": []
+    },
+    {
+      "ID": "dynamic_object_torch",
+      "Position": {
+        "x": 6.28,
+        "y": 9.14,
+        "z": 36.3
+      },
+      "Rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "Data": [
+        {
+          "Key": "item_name",
+          "Value": "torch"
+        }
+      ]
+    },
+    {
+      "ID": "bloodrun_map_lamp_1",
+      "Position": {
+        "x": 8.57,
+        "y": 19.28,
+        "z": 36.08
+      },
+      "Rotation": {
+        "x": 47.52202,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "Data": []
+    },
+    {
+      "ID": "bloodrun_map_lamp_1",
+      "Position": {
+        "x": 37.27,
+        "y": 15.43,
+        "z": 35.04
+      },
+      "Rotation": {
+        "x": 317.2296,
+        "y": 195.925827,
+        "z": 64.58752
+      },
+      "Data": []
+    },
+    {
+      "ID": "bloodrun_map_lamp_2",
+      "Position": {
+        "x": 16.5527782,
+        "y": 22.12,
+        "z": 46.3500023
+      },
+      "Rotation": {
+        "x": 338.1097,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "Data": []
+    },
+    {
+      "ID": "bloodrun_map_lamp_2",
+      "Position": {
+        "x": 13.59,
+        "y": 8.21,
+        "z": 21.24
+      },
+      "Rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "Data": []
+    },
+    {
+      "ID": "bloodrun_map_lamp_1",
+      "Position": {
+        "x": 43.55,
+        "y": 8.54,
+        "z": 20.17
+      },
+      "Rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 307.9257
+      },
+      "Data": []
+    },
+    {
+      "ID": "bloodrun_map_lamp_1",
+      "Position": {
+        "x": 43.55,
+        "y": 8.54,
+        "z": 17.2
+      },
+      "Rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 307.9257
+      },
+      "Data": []
+    },
+    {
+      "ID": "bloodrun_map_lamp_1",
+      "Position": {
+        "x": 43.55,
+        "y": 8.54,
+        "z": 22.89
+      },
+      "Rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 307.9257
+      },
+      "Data": []
+    },
+    {
+      "ID": "bloodrun_map_lamp_2",
+      "Position": {
+        "x": 29.59,
+        "y": 22.65,
+        "z": 55.2425957
+      },
+      "Rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "Data": []
+    },
+    {
+      "ID": "bloodrun_map_lamp_2",
+      "Position": {
+        "x": 5.92,
+        "y": 14.94,
+        "z": 55.2425957
+      },
+      "Rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "Data": []
+    },
+    {
+      "ID": "teleport_enter",
+      "Position": {
+        "x": 39.86,
+        "y": 7.05,
+        "z": 27.77
+      },
+      "Rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "Data": [
+        {
+          "Key": "teleport_id",
+          "Value": 0
+        }
+      ]
+    },
+    {
+      "ID": "teleport_exit",
+      "Position": {
+        "x": 5.68,
+        "y": 11.89,
+        "z": 54.05335
+      },
+      "Rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "Data": [
+        {
+          "Key": "teleport_id",
+          "Value": 0
+        }
+      ]
+    },
+    {
+      "ID": "teleport_enter",
+      "Position": {
+        "x": 14.31,
+        "y": 6.6,
+        "z": 35.235405
+      },
+      "Rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "Data": [
+        {
+          "Key": "teleport_id",
+          "Value": 1
+        }
+      ]
+    },
+    {
+      "ID": "teleport_exit",
+      "Position": {
+        "x": 44.57729,
+        "y": 16.47,
+        "z": 48.8279266
+      },
+      "Rotation": {
+        "x": 0.0,
+        "y": 270.0,
+        "z": 0.0
+      },
+      "Data": [
+        {
+          "Key": "teleport_id",
+          "Value": 1
+        }
+      ]
+    },
+    {
+      "ID": "player_spawn",
+      "Position": {
+        "x": 29.3481617,
+        "y": 11.83,
+        "z": 52.1719055
+      },
+      "Rotation": {
+        "x": 0.0,
+        "y": 270.0,
+        "z": 0.0
+      },
+      "Data": []
+    },
+    {
+      "ID": "player_spawn",
+      "Position": {
+        "x": 28.68,
+        "y": 11.83,
+        "z": 58.34
+      },
+      "Rotation": {
+        "x": 0.0,
+        "y": 240.0,
+        "z": 0.0
+      },
+      "Data": []
+    },
+    {
+      "ID": "player_spawn",
+      "Position": {
+        "x": 32.35,
+        "y": 11.84,
+        "z": 36.11
+      },
+      "Rotation": {
+        "x": 0.0,
+        "y": 239.999954,
+        "z": 0.0
+      },
+      "Data": []
+    },
+    {
+      "ID": "player_spawn",
+      "Position": {
+        "x": 18.4592361,
+        "y": 11.74,
+        "z": 30.8216858
+      },
+      "Rotation": {
+        "x": 0.0,
+        "y": 51.5986,
+        "z": 0.0
+      },
+      "Data": []
+    },
+    {
+      "ID": "player_spawn",
+      "Position": {
+        "x": 37.35188,
+        "y": 6.47,
+        "z": 17.30428
+      },
+      "Rotation": {
+        "x": 0.0,
+        "y": 312.469635,
+        "z": 0.0
+      },
+      "Data": []
+    },
+    {
+      "ID": "player_spawn",
+      "Position": {
+        "x": 5.95996046,
+        "y": 6.29,
+        "z": 10.14
+      },
+      "Rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "Data": []
+    },
+    {
+      "ID": "player_spawn",
+      "Position": {
+        "x": 21.039,
+        "y": 6.28,
+        "z": 25.765
+      },
+      "Rotation": {
+        "x": 0.0,
+        "y": 239.999954,
+        "z": 0.0
+      },
+      "Data": []
+    },
+    {
+      "ID": "player_spawn",
+      "Position": {
+        "x": 14.8829384,
+        "y": 6.26,
+        "z": 30.9957161
+      },
+      "Rotation": {
+        "x": 0.0,
+        "y": 270.0,
+        "z": 0.0
+      },
+      "Data": []
+    },
+    {
+      "ID": "player_spawn",
+      "Position": {
+        "x": 30.2174129,
+        "y": 16.4000015,
+        "z": 60.4793777
+      },
+      "Rotation": {
+        "x": 0.0,
+        "y": 210.000015,
+        "z": 0.0
+      },
+      "Data": []
+    },
+    {
+      "ID": "player_spawn",
+      "Position": {
+        "x": 44.1750679,
+        "y": 16.3,
+        "z": 62.36621
+      },
+      "Rotation": {
+        "x": 0.0,
+        "y": 269.999939,
+        "z": 0.0
+      },
+      "Data": []
+    }
+  ]
+}

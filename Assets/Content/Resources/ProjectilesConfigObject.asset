@@ -17,3 +17,5 @@ MonoBehaviour:
     projectile: {fileID: 4096542322950213431, guid: 663a3bc54180710479860791a563ba85, type: 3}
   - id: 1
     projectile: {fileID: 6416251712927422792, guid: c4f413fbf7406834d8b717ea71eb4a29, type: 3}
+  - id: 2
+    projectile: {fileID: 8258898034046833749, guid: 31bd0ec466d5fc64ebcbce74ddc518bb, type: 3}

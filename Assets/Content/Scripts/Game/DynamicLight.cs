@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Content.Scripts.Game.Services;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using Zenject;
 
 namespace Content.Scripts.Game
@@ -82,6 +83,17 @@ namespace Content.Scripts.Game
                 for (int i = 0; i < lightBounds.boundsList.Count; i++)
                 {
                     Gizmos.DrawWireCube(transform.position + lightBounds.boundsList[i].offset, lightBounds.boundsList[i].size);
+                }
+            }
+        }
+
+        public void SetShadows(bool state)
+        {
+            if (!state)
+            {
+                for (int i = 0; i < lights.Count; i++)
+                {
+                    lights[i].shadows = LightShadows.None;
                 }
             }
         }

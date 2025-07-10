@@ -64,6 +64,10 @@ namespace Content.Scripts.Game.Services
                     if (dynamicLight != null)
                     {
                         dynamicLight.Init((DynamicLight.LightBoundsList)spawned.GetKey("bounds"));
+                        if (spawned.GetKey("shadows") != null)
+                        {
+                            dynamicLight.SetShadows((bool)spawned.GetKey("shadows"));
+                        }
                         dynamicLights.Add(dynamicLight);
                     }
                 }

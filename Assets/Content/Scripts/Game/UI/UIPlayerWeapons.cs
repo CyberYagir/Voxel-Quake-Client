@@ -21,20 +21,26 @@ namespace Content.Scripts.Game.UI
 
             for (var i = 0; i < weaponsConfig.WeaponsList.Count; i++)
             {
-                Instantiate(item, item.transform.parent)
-                    .With(x => spawnedItems.Add(x))
-                    .With(x => x.gameObject.SetActive(true));
+                if (weaponsConfig.WeaponsList[i].IsDisplay)
+                {
+                    var id = i;
+                    Instantiate(item, item.transform.parent)
+                        .With(x => spawnedItems.Add(x))
+                        .With(x=>x.Redraw(weaponsConfig.WeaponsList[id], inventory.GetWeaponData(weaponsConfig.WeaponsList[id])))
+                        .With(x => x.gameObject.SetActive(true));
+                }
             }
+
             inventory.OnInventoryChanged += Redraw;
             Redraw();
         }
 
         private void Redraw()
         {
-            for (var i = 0; i < weaponsConfig.WeaponsList.Count; i++)
+            for (var i = 0; i < spawnedItems.Count; i++)
             {
-                spawnedItems[i].Redraw(weaponsConfig.WeaponsList[i],
-                    inventory.GetWeaponData(weaponsConfig.WeaponsList[i]));
+                var weapon = spawnedItems[i].Weapon;
+                spawnedItems[i].Redraw(weapon, inventory.GetWeaponData(weapon));
             }
         }
     }

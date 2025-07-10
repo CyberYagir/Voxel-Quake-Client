@@ -19,3 +19,4 @@ MonoBehaviour:
   bulletsAdd: 5
   maxBullets: 25
   fireRate: 0.75
+  isDisplay: 1

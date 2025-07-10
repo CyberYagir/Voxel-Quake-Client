@@ -334,7 +334,7 @@ GameObject:
   - component: {fileID: 3446624937281597984}
   - component: {fileID: 6416251712927422792}
   m_Layer: 8
-  m_Name: Rail
+  m_Name: RailProjectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

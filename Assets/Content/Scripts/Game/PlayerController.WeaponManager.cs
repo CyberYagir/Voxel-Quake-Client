@@ -34,6 +34,8 @@ namespace Content.Scripts.Game
                 this.weaponsConfig = weaponsConfig;
                 this.netServiceProjectiles = netServiceProjectiles;
                 this.prefabSpawnerFabric = prefabSpawnerFabric;
+
+                ActiveWeapon(inventory.GetAnyActiveWeapon());
             }
 
             private void ActiveWeapon(WeaponDataObject weaponDataObject)
@@ -114,6 +116,7 @@ namespace Content.Scripts.Game
                      }
                      
                      spawnedWeapon.UpdateWeapon();
+                     spawnedWeapon.UpdateWeaponPress(InputService.IsShootPressed);
                 }
             }
             

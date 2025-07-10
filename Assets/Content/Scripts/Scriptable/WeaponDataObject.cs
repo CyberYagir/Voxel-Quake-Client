@@ -16,6 +16,7 @@ namespace Content.Scripts.Scriptable
         [SerializeField] private int bulletsAdd;
         [SerializeField] private int maxBullets;
         [SerializeField] private float fireRate;
+        [SerializeField] private bool isDisplay;
 
         public float FireRate => fireRate;
 
@@ -30,5 +31,7 @@ namespace Content.Scripts.Scriptable
         public int BulletsAdd => bulletsAdd;
 
         public List<KeyCode> Keys => keys;
+
+        public bool IsDisplay => isDisplay;
     }
 }

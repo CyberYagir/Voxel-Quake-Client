@@ -9,10 +9,14 @@ namespace Content.Scripts.Game.UI
     {
         [SerializeField] private Image icon;
         [SerializeField] private TMP_Text text;
+        private WeaponDataObject weapon;
+
+        public WeaponDataObject Weapon => weapon;
 
 
         public void Redraw(WeaponDataObject weapon, PlayerInventory.WeaponData weaponData)
         {
+            this.weapon = weapon;
             icon.sprite = weapon.Icon;
             if (weaponData == null || weaponData.Bullets == 0)
             {

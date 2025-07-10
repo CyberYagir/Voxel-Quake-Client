@@ -564,7 +564,7 @@ Transform:
   m_GameObject: {fileID: 5888965938049481357}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 32.55, y: -1.0220003, z: 32.7}
+  m_LocalPosition: {x: 32.55, y: -1.022, z: 32.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -645,7 +645,7 @@ CapsuleCollider:
   m_Radius: 0.5000001
   m_Height: 1.5
   m_Direction: 1
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+  m_Center: {x: 0.00000005960464, y: 0, z: -0.00000008940697}
 --- !u!143 &8355856759021709342
 CharacterController:
   m_ObjectHideFlags: 0
@@ -795,6 +795,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inventory: []
+  startWeapons:
+  - {fileID: 11400000, guid: ccaab02ec9f54f44384467205e3bed90, type: 2}
 --- !u!114 &1049250075613123106
 MonoBehaviour:
   m_ObjectHideFlags: 0

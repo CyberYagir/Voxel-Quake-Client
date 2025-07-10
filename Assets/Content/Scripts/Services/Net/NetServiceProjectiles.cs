@@ -64,13 +64,19 @@ namespace Content.Scripts.Services.Net
                 case EProjectileType.Rail:
                     SpawnRail(pos, forward, prefab, spawnPoint, ownerID, projectileUID);
                     break;
-                
+                case EProjectileType.Gauntlet:
+                    SpawnGauntlet(pos, forward, prefab, spawnPoint, ownerID, projectileUID);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            
-            
-            Debug.Log("Spawn " + projectileType + " " + ownerID);
+        }
+
+        private void SpawnGauntlet(Vector3 pos, Vector3 forward, ProjectileBase prefab, Vector3 spawnPoint, int ownerID, string uid)
+        {
+            var item = netService.SpawnedFabric.SpawnItem(prefab, spawnPoint)
+                .With(x => x.Init(forward, ownerID, uid))
+                .With(x=>AddProjectile(uid, x));
         }
 
         private void SpawnRocket(Vector3 pos, Vector3 forward, ProjectileBase prefab, Vector3 spawnPoint, int ownerID, string uid)

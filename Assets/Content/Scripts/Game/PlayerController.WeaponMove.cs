@@ -29,18 +29,19 @@ namespace Content.Scripts.Game
             public void Update()
             {
                 var deltaPos = oldPlayerPos - transform.position;
-
                 oldPlayerPos = transform.position;
+                print(deltaPos.magnitude);
 
-                holder.localPosition = Vector3.Lerp(holder.localPosition,
-                    pos + holder.parent.InverseTransformDirection(deltaPos) * moveModify, Time.deltaTime * 5);
-            
-            
+                // Вычисляем целевую позицию от базовой позиции
+                Vector3 targetPos = pos + holder.parent.InverseTransformDirection(deltaPos) * moveModify;
+    
+                // Lerp к целевой позиции
+                holder.localPosition = Vector3.Lerp(holder.localPosition, targetPos, Time.deltaTime * 5);
+    
                 holder.localEulerAngles = Vector3.zero;
-
-                var targetPos = holder.rotation;
-
-                rotation = Quaternion.Lerp(rotation, targetPos, Time.deltaTime * speed);
+    
+                var targetRot = holder.rotation;
+                rotation = Quaternion.Lerp(rotation, targetRot, Time.deltaTime * speed);
                 holder.rotation = rotation;
             }
 

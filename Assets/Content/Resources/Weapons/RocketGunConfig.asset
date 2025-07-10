@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b77a245aad3d24468d82e2067afbed6, type: 3}
+  m_Name: RocketGunConfig
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 872123330402644351, guid: 2cfe7007b9a70ee45ac2fc21254c86c6, type: 3}
+  icon: {fileID: -134069922, guid: 58e81ca797084424dad5b41af666214f, type: 3}
+  keys: 3500000071000000
+  bullets: 10
+  bulletsAdd: 5
+  maxBullets: 25
+  fireRate: 0.75

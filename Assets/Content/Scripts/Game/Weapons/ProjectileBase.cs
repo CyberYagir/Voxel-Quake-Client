@@ -1,3 +1,4 @@
+using System;
 using Content.Scripts.Game.Services;
 using Content.Scripts.Game.Voxels;
 using Content.Scripts.Services.Net;
@@ -9,6 +10,9 @@ namespace Content.Scripts.Game.Weapons
     public abstract class ProjectileBase : MonoBehaviour
     {
         [SerializeField] protected NetObject netObject;
+
+        public event Action OnProjectileEnd;
+        
         protected VoxelVolume voxelVolume;
         protected PrefabSpawnerFabric prefabSpawnerFabric;
         protected PlayerService playerService;
@@ -32,6 +36,17 @@ namespace Content.Scripts.Game.Weapons
 
         public virtual void DestroyProjectile()
         {
+            
+        }
+
+        public virtual void SetHitScanPoint(Vector3 point, Vector3 dir)
+        {
+            
+        }
+
+        protected void EndProjectile()
+        {
+            OnProjectileEnd?.Invoke();
             
         }
     }

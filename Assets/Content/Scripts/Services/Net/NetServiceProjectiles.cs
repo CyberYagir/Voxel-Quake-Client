@@ -61,6 +61,10 @@ namespace Content.Scripts.Services.Net
                 case EProjectileType.Rocket:
                     SpawnRocket(pos, forward, prefab, spawnPoint, ownerID, projectileUID);
                     break;
+                case EProjectileType.Rail:
+                    SpawnRail(pos, forward, prefab, spawnPoint, ownerID, projectileUID);
+                    break;
+                
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -72,22 +76,45 @@ namespace Content.Scripts.Services.Net
         private void SpawnRocket(Vector3 pos, Vector3 forward, ProjectileBase prefab, Vector3 spawnPoint, int ownerID, string uid)
         {
             var raycast = Physics.Raycast(pos, forward, out RaycastHit raycastHit, 500, LayerMask.GetMask("Default"));
+            var dir = (pos + forward * 500) - spawnPoint;
             if (raycast)
             {
-                var item = netService.SpawnedFabric.SpawnItem(prefab, spawnPoint)
-                    .With(x => x.Init(raycastHit.point - spawnPoint, ownerID, uid))
-                    .With(x=>AddProjectile(uid, x));
+                dir = raycastHit.point - spawnPoint;
             }
-            else
+            
+            var item = netService.SpawnedFabric.SpawnItem(prefab, spawnPoint)
+                .With(x => x.Init(dir, ownerID, uid))
+                .With(x=>AddProjectile(uid, x));
+            
+            if (!raycast)
             {
-                var item = netService.SpawnedFabric.SpawnItem(prefab, spawnPoint)
-                    .With(x => x.Init((pos + forward * 500) - spawnPoint, ownerID, uid))
-                    .With(x=>AddProjectile(uid, x));
+     
                 DOVirtual.DelayedCall(30, delegate
                 {
                     DestroyProjectile(uid, item.transform.position);
                 }).SetUpdate(UpdateType.Fixed).SetLink(item.gameObject);
             }
+        }
+
+        private void SpawnRail(Vector3 pos, Vector3 forward, ProjectileBase prefab, Vector3 spawnPoint, int ownerID,
+            string uid)
+        {
+            var raycast = Physics.Raycast(pos, forward, out RaycastHit raycastHit, 500, LayerMask.GetMask("Default"));
+            
+            var dir = (pos + forward * 500) - spawnPoint;
+            if (raycast)
+            {
+                dir = raycastHit.point - spawnPoint;
+            }
+            
+            var item = netService.SpawnedFabric.SpawnItem(prefab, spawnPoint)
+                .With(x => x.Init(dir, ownerID, uid))
+                .With(x=>x.SetHitScanPoint(pos, forward))
+                .With(x => AddProjectile(uid, x));
+            item.OnProjectileEnd += delegate
+            {
+                RPCDestroyProjectile(uid, item.transform.position);
+            };
         }
 
         private void AddProjectile(string uid, ProjectileBase projectile)

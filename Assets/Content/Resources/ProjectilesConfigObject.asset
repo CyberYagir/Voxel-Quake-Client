@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: ProjectilesConfigObject
   m_EditorClassIdentifier: 
   items:
-  - id: ROCKET
+  - id: 0
     projectile: {fileID: 4096542322950213431, guid: 663a3bc54180710479860791a563ba85, type: 3}
+  - id: 1
+    projectile: {fileID: 6416251712927422792, guid: c4f413fbf7406834d8b717ea71eb4a29, type: 3}

@@ -1,4 +1,5 @@
 using Content.Scripts.Game.Services;
+using Content.Scripts.Scriptable;
 using Content.Scripts.Services.Net;
 using DG.Tweening;
 using ServerLibrary.Structs;
@@ -18,9 +19,13 @@ namespace Content.Scripts.Game.Weapons
 
         private Material material;
         private Color matColor;
-        public override void Init(PrefabSpawnerFabric spawnerFabric, Camera camera, NetServiceProjectiles netServiceProjectiles)
+        public override void Init(
+            PrefabSpawnerFabric spawnerFabric, 
+            Camera camera,
+            NetServiceProjectiles netServiceProjectiles, 
+            WeaponDataObject weaponDataObject)
         {
-            base.Init(spawnerFabric, camera, netServiceProjectiles);
+            base.Init(spawnerFabric, camera, netServiceProjectiles, weaponDataObject);
 
             var mats = meshRenderer.sharedMaterials;
 
@@ -47,7 +52,7 @@ namespace Content.Scripts.Game.Weapons
             {
                 animator.SetTrigger(HASH_SHOOT_TRIGGER);
                 muzzleFlash.Play(true);
-                netServiceProjectiles.RPCSpawnProjectile(EProjectileType.Rocket, camera.transform.position, camera.transform.forward, projectileSpawnPoint.position);
+                netServiceProjectiles.RPCSpawnProjectile(EProjectileType.Rail, camera.transform.position, camera.transform.forward, projectileSpawnPoint.position);
                 ResetTime();
             }
         }

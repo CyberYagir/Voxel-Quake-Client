@@ -2,11 +2,12 @@ using System.Collections.Generic;
 using Content.Scripts.Game.Weapons;
 using ServerLibrary.Structs;
 using UnityEngine;
+using Zenject;
 
 namespace Content.Scripts.Scriptable
 {
     [CreateAssetMenu(menuName = "Create ProjectilesConfigObject", fileName = "ProjectilesConfigObject", order = 0)]
-    public class ProjectilesConfigObject : ScriptableObject
+    public class ProjectilesConfigObject : ScriptableObjectInstaller
     {
         [System.Serializable]
         public class Item
@@ -24,6 +25,11 @@ namespace Content.Scripts.Scriptable
         public ProjectileBase GetProjectilePrefab(EProjectileType id)
         {
             return items.Find(x=>x.ID == id).Projectile;
+        }
+
+        public override void InstallBindings()
+        {
+            Container.Bind<ProjectilesConfigObject>().FromInstance(this).AsSingle().NonLazy();
         }
     }
 }

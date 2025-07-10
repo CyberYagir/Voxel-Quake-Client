@@ -15,7 +15,6 @@ namespace Content.Scripts.Services.Net
 {
     public class NetService : SerializedMonoBehaviour
     {
-        [SerializeField] private ProjectilesConfigObject projectilesConfig;
         [SerializeField] private List<NetServiceModule> modules = new List<NetServiceModule>();
         
         private NetManager client;
@@ -25,6 +24,7 @@ namespace Content.Scripts.Services.Net
         private PlayerConfigObject playerConfig;
         private ScenesService scenesService;
         private PrefabSpawnerFabric fabric;
+        private ProjectilesConfigObject projectilesConfig;
 
         public event Action OnPlayerConnected;
         public event Action OnPlayerConnectionStart;
@@ -38,8 +38,9 @@ namespace Content.Scripts.Services.Net
         public PrefabSpawnerFabric SpawnedFabric => fabric;
 
         [Inject]
-        private void Construct(ScenesService scenesService, PlayerConfigObject playerConfigObject)
+        private void Construct(ScenesService scenesService, PlayerConfigObject playerConfigObject, ProjectilesConfigObject projectilesConfig)
         {
+            this.projectilesConfig = projectilesConfig;
             this.scenesService = scenesService;
             this.playerConfig = playerConfigObject;
             OnPlayerConnected += delegate

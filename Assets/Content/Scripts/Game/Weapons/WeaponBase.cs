@@ -1,4 +1,5 @@
 using Content.Scripts.Game.Services;
+using Content.Scripts.Scriptable;
 using Content.Scripts.Services.Net;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -8,9 +9,8 @@ namespace Content.Scripts.Game.Weapons
     public abstract class WeaponBase : MonoBehaviour
     {
         [SerializeField] protected Transform projectileSpawnPoint;
-        [SerializeField] private int bullets;
-        [SerializeField] private int maxBullets;
-        [SerializeField] private float fireRate;
+        
+        private float fireRate;
 
     
         [SerializeField, ReadOnly] protected float time = 0;
@@ -20,11 +20,14 @@ namespace Content.Scripts.Game.Weapons
 
         public bool isCanShoot => time >= fireRate;
     
-        public virtual void Init(PrefabSpawnerFabric spawnerFabric, Camera camera, NetServiceProjectiles netServiceProjectiles)
+        public virtual void Init(PrefabSpawnerFabric spawnerFabric, Camera camera, NetServiceProjectiles netServiceProjectiles, WeaponDataObject weaponDataObject)
         {
             this.netServiceProjectiles = netServiceProjectiles;
             this.camera = camera;
             this.spawnerFabric = spawnerFabric;
+
+            fireRate = weaponDataObject.FireRate;
+            
             time = fireRate;
         }
 

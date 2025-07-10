@@ -49,6 +49,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _scriptableObjectInstallers:
   - {fileID: 11400000, guid: 4c911cde2473b52438d1b6dc7aa9eeb9, type: 2}
+  - {fileID: 11400000, guid: e218ad76c492b914db8d412c8cb10447, type: 2}
+  - {fileID: 11400000, guid: 02d6e32e49646d74286e860b8c9b7e21, type: 2}
   _monoInstallers:
   - {fileID: 114758750225951394}
   _installerPrefabs: []
@@ -187,4 +189,3 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  projectilesConfig: {fileID: 11400000, guid: 02d6e32e49646d74286e860b8c9b7e21, type: 2}

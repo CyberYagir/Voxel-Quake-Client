@@ -9,11 +9,9 @@ namespace Content.Scripts.Game.Weapons
     public abstract class WeaponBase : MonoBehaviour
     {
         [SerializeField] protected Transform projectileSpawnPoint;
+        [SerializeField, ReadOnly] protected float time = 0;
         
         private float fireRate;
-
-    
-        [SerializeField, ReadOnly] protected float time = 0;
         protected PrefabSpawnerFabric spawnerFabric;
         protected Camera camera;
         protected NetServiceProjectiles netServiceProjectiles;

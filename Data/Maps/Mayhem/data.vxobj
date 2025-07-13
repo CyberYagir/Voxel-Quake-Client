@@ -827,6 +827,25 @@
           "Value": 4.0
         }
       ]
+    },
+    {
+      "ID": "weaponspot_shotgun",
+      "Position": {
+        "x": 26.88684,
+        "y": 5.45,
+        "z": 22.7052078
+      },
+      "Rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "Data": [
+        {
+          "Key": "reload_time",
+          "Value": 4.0
+        }
+      ]
     }
   ]
 }

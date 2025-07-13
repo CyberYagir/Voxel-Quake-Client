@@ -1,5 +1,6 @@
 using Content.Scripts.Game.Interfaces;
 using Content.Scripts.Game.Services;
+using Content.Scripts.Services.Net;
 using UnityEngine;
 
 namespace Content.Scripts.Game.MapObjects
@@ -18,9 +19,9 @@ namespace Content.Scripts.Game.MapObjects
 
         }
 
-        public override void Init(MapObjectsService mapObjectsService)
+        public override void Init(MapObjectsService mapObjectsService, int uid, NetService netService)
         {
-            base.Init(mapObjectsService);
+            base.Init(mapObjectsService, uid, netService);
 
             var teleport_id = GetKey("teleport_id");
             foreach (var mapAdditionalItem in mapObjectsService.SpawnedItems)

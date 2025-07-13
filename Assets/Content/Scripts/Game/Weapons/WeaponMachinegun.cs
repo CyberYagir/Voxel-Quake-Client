@@ -3,14 +3,14 @@ using UnityEngine;
 
 namespace Content.Scripts.Game.Weapons
 {
-    public class WeaponGauntlet : WeaponBase
+    public class WeaponMachinegun : WeaponBase
     {
         [SerializeField] private float velAdd;
         [SerializeField] private float maxVel;
         [SerializeField] private float drag;
         [SerializeField] private Transform rotator;
         [SerializeField] private Transform jitterer;
-        [SerializeField] private float maxDistance;
+        [SerializeField] private float spreadAngle = 5f;
         
         private float vel;
 
@@ -19,19 +19,25 @@ namespace Content.Scripts.Game.Weapons
         {
             if (isCanShoot)
             {
-                if (Physics.Raycast(camera.transform.position, camera.transform.forward, out RaycastHit hit, maxDistance, LayerMask.GetMask("Default")))
+                float randomX = Random.Range(-spreadAngle, spreadAngle);
+                float randomY = Random.Range(-spreadAngle, spreadAngle);
+                
+                Vector3 spreadDirection = Quaternion.Euler(randomX, randomY, 0) * camera.transform.forward;
+                
+                
+                if (Physics.Raycast(camera.transform.position, spreadDirection, out RaycastHit hit, Mathf.Infinity, LayerMask.GetMask("Default")))
                 {
-                    netServiceProjectiles.RPCSpawnProjectile(EProjectileType.Gauntlet, camera.transform.position, camera.transform.forward, hit.point);
+                    netServiceProjectiles.RPCSpawnProjectile(EProjectileType.Machinegun, camera.transform.position, spreadDirection, hit.point);
                 }
                 ResetTime();
             }
         }
 
-        public override void UpdateWeaponPress(bool isDown, bool isHasBullets)
+        public override void UpdateWeaponPress(bool isDown, bool isHasBulelts)
         {
-            base.UpdateWeaponPress(isDown, isHasBullets);
+            base.UpdateWeaponPress(isDown, isHasBulelts);
 
-            if (isDown)
+            if (isDown && isHasBulelts)
             {
                 vel += velAdd * Time.deltaTime;
 

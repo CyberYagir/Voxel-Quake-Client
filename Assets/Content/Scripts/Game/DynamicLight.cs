@@ -78,7 +78,7 @@ namespace Content.Scripts.Game
 
         private void OnDrawGizmos()
         {
-            if (isHasBounds)
+            if (isHasBounds && isPlayerInside)
             {
                 for (int i = 0; i < lightBounds.boundsList.Count; i++)
                 {

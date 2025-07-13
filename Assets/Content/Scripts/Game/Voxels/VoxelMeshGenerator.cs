@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Content.Scripts.Game.Scriptable;
 using UnityEngine;
@@ -15,6 +16,7 @@ namespace Content.Scripts.Game.Voxels
             public int width, height, length;
             public Vector3Int qVector;
         }
+        
         private struct SubMeshData
         {
             public List<Vector3> vertices;
@@ -28,6 +30,16 @@ namespace Content.Scripts.Game.Voxels
         private static Block[] cachedMask;
         private static int cachedMaskSize = 0;
         private static HashSet<int> cachedMaterialsIds = new HashSet<int>();
+
+        // НОВОЕ: Предварительно выделенные буферы для избежания аллокаций
+        private static readonly List<Vector3> tempVertices = new List<Vector3>(4);
+        private static readonly List<Vector3> tempNormals = new List<Vector3>(4);
+        private static readonly List<Vector2> tempUVs = new List<Vector2>(4);
+        private static readonly List<int> tempTriangles = new List<int>(6);
+        
+        // Пулы для SubMeshData - избегаем создания новых списков
+        private static readonly Queue<SubMeshData> subMeshPool = new Queue<SubMeshData>();
+        private static readonly int MaxPoolSize = 32;
 
         // Описание всех граней (6 сторон)
         private static readonly Vector3[] faceNormals =
@@ -83,14 +95,60 @@ namespace Content.Scripts.Game.Voxels
             }
         };
 
+        private static Dictionary<string, Mesh> meshInstanced = new Dictionary<string, Mesh>(2000);
         private static List<IMeshDrawable> modifiedNeighboursChunks = new List<IMeshDrawable>(6);
         private static Dictionary<int, SubMeshData> subMeshDict = new Dictionary<int, SubMeshData>(6);
         private static List<Vector3> allVertices = new List<Vector3>();
         private static List<Vector3> allNormals = new List<Vector3>();
         private static List<Vector2> allUVs = new List<Vector2>();
         private static List<SubMeshDescriptor> subMeshes = new List<SubMeshDescriptor>();
+        private static List<int> allTriangles = new List<int>(256);
+        private static List<int> materialIds = new List<int>(256);
 
         public static List<IMeshDrawable> ModifiedNeighboursChunks => modifiedNeighboursChunks;
+
+        /// <summary>
+        /// Создаёт или получает SubMeshData из пула
+        /// </summary>
+        private static SubMeshData GetPooledSubMeshData(int materialId)
+        {
+            SubMeshData subMesh;
+            
+            if (subMeshPool.Count > 0)
+            {
+                subMesh = subMeshPool.Dequeue();
+                // Очищаем списки для повторного использования
+                subMesh.vertices.Clear();
+                subMesh.triangles.Clear();
+                subMesh.uvs.Clear();
+                subMesh.normals.Clear();
+                subMesh.materialId = materialId;
+            }
+            else
+            {
+                subMesh = new SubMeshData
+                {
+                    vertices = new List<Vector3>(256),
+                    triangles = new List<int>(256),
+                    uvs = new List<Vector2>(256),
+                    normals = new List<Vector3>(256),
+                    materialId = materialId
+                };
+            }
+            
+            return subMesh;
+        }
+
+        /// <summary>
+        /// Возвращает SubMeshData в пул
+        /// </summary>
+        private static void ReturnToPool(SubMeshData subMesh)
+        {
+            if (subMeshPool.Count < MaxPoolSize)
+            {
+                subMeshPool.Enqueue(subMesh);
+            }
+        }
 
         /// <summary>
         /// Основной метод генерации меша с использованием Greedy Meshing алгоритма
@@ -102,15 +160,81 @@ namespace Content.Scripts.Game.Voxels
             float voxelSize = chunk.VoxelSize;
 
             cachedMaterialsIds.Clear();
+            
+            // Возвращаем использованные SubMeshData в пул
+            foreach (var kvp in subMeshDict)
+            {
+                ReturnToPool(kvp.Value);
+            }
             subMeshDict.Clear();
+            
             modifiedNeighboursChunks.Clear();
+            
             // Проходим по всем трём измерениям
             for (int dimension = 0; dimension < 3; dimension++)
             {
                 ProcessDimension(chunk, dimension, size, voxelSize);
             }
 
-            return CreateMultiMaterialMesh(materials, chunk);
+            var mesh = CreateMultiMaterialMesh(materials, chunk);
+
+            var hash = GetMeshHash(mesh);
+            if (meshInstanced.ContainsKey(hash))
+            {
+                return meshInstanced[hash];
+            }
+
+            mesh.name = hash;
+            if (meshInstanced.Count >= 2000)
+            {
+                meshInstanced.Clear();
+                Debug.LogError("Clear Meshes");
+            }
+            meshInstanced.Add(hash, mesh);
+            
+            return mesh;
+        }
+        
+        static string GetMeshHash(Mesh mesh)
+        {
+            unchecked
+            {
+                ulong hash = 14695981039346656037UL;
+                const ulong fnvPrime = 1099511628211UL;
+        
+                var vertices = mesh.vertices;
+                var triangles = mesh.triangles;
+        
+                hash ^= (ulong)vertices.Length;
+                hash *= fnvPrime;
+                hash ^= (ulong)triangles.Length;
+                hash *= fnvPrime;
+        
+                // Только вершины и треугольники для батчинга
+                for (int i = 0; i < vertices.Length; i++)
+                {
+                    ref readonly var v = ref vertices[i];
+                    // Округляем до 4 знаков для батчинга похожих мешей
+                    uint x = (uint)Mathf.RoundToInt(v.x * 10000f);
+                    uint y = (uint)Mathf.RoundToInt(v.y * 10000f);
+                    uint z = (uint)Mathf.RoundToInt(v.z * 10000f);
+            
+                    hash ^= x;
+                    hash *= fnvPrime;
+                    hash ^= y;
+                    hash *= fnvPrime;
+                    hash ^= z;
+                    hash *= fnvPrime;
+                }
+        
+                for (int i = 0; i < triangles.Length; i++)
+                {
+                    hash ^= (ulong)triangles[i];
+                    hash *= fnvPrime;
+                }
+        
+                return hash.ToString("X");
+            }
         }
 
         /// <summary>
@@ -302,25 +426,16 @@ namespace Content.Scripts.Game.Voxels
             // Получаем или создаём подмеш для данного материала
             if (!subMeshDict.TryGetValue(materialId, out SubMeshData subMesh))
             {
-                subMesh = new SubMeshData
-                {
-                    vertices = new List<Vector3>(4),
-                    triangles = new List<int>(4),
-                    uvs = new List<Vector2>(4),
-                    normals = new List<Vector3>(4),
-                    materialId = materialId
-                };
+                subMesh = GetPooledSubMeshData(materialId);
                 subMeshDict[materialId] = subMesh;
             }
 
-            // Создаём квад
-            CreateQuad(ref subMesh.vertices, ref subMesh.triangles, ref subMesh.uvs, ref subMesh.normals,
-                ref axisData, i, j, width, height, slice, isBackFace, voxelSize);
+            // Создаём квад БЕЗ АЛЛОКАЦИЙ
+            CreateQuadOptimized(ref subMesh, ref axisData, i, j, width, height, slice, isBackFace, voxelSize);
 
             // Обновляем данные в словаре
             subMeshDict[materialId] = subMesh;
         }
-
 
         /// <summary>
         /// Вычисляет ширину квада для greedy meshing
@@ -373,7 +488,77 @@ namespace Content.Scripts.Game.Voxels
         }
 
         /// <summary>
-        /// Создаёт квад (4 вертекса и 2 треугольника)
+        /// ОПТИМИЗИРОВАННАЯ ВЕРСИЯ: Создаёт квад БЕЗ временных аллокаций
+        /// Напрямую добавляет данные в списки SubMeshData
+        /// </summary>
+        private static void CreateQuadOptimized(
+            ref SubMeshData subMesh,
+            ref AxisData axisData, 
+            int i, int j, int width, int height, 
+            int slice, bool isBackFace, float voxelSize)
+        {
+            // Вычисляем позицию квада
+            Vector3Int basePos = Vector3Int.zero;
+            basePos[axisData.dimension] = slice;
+            basePos[axisData.u] = i;
+            basePos[axisData.v] = j;
+
+            Vector3Int du = Vector3Int.zero;
+            du[axisData.u] = width;
+
+            Vector3Int dv = Vector3Int.zero;
+            dv[axisData.v] = height;
+
+            // Вычисляем вертексы напрямую
+            Vector3 v0 = (Vector3)basePos * voxelSize;
+            Vector3 v1 = (Vector3)(basePos + dv) * voxelSize;
+            Vector3 v2 = (Vector3)(basePos + du + dv) * voxelSize;
+            Vector3 v3 = (Vector3)(basePos + du) * voxelSize;
+
+            // Корректируем порядок вершин для задней грани
+            if (isBackFace)
+            {
+                Vector3 temp = v1;
+                v1 = v3;
+                v3 = temp;
+            }
+
+            // Получаем текущий базовый индекс
+            int vertStart = subMesh.vertices.Count;
+            
+            // Напрямую добавляем вертексы в список (без промежуточных аллокаций)
+            subMesh.vertices.Add(v0);
+            subMesh.vertices.Add(v1);
+            subMesh.vertices.Add(v2);
+            subMesh.vertices.Add(v3);
+
+            // Добавляем треугольники напрямую
+            subMesh.triangles.Add(vertStart);
+            subMesh.triangles.Add(vertStart + 2);
+            subMesh.triangles.Add(vertStart + 1);
+            subMesh.triangles.Add(vertStart);
+            subMesh.triangles.Add(vertStart + 3);
+            subMesh.triangles.Add(vertStart + 2);
+
+            // Вычисляем и добавляем нормали
+            Vector3 normal = Vector3.zero;
+            normal[axisData.dimension] = isBackFace ? -1 : 1;
+
+            subMesh.normals.Add(normal);
+            subMesh.normals.Add(normal);
+            subMesh.normals.Add(normal);
+            subMesh.normals.Add(normal);
+
+            // Добавляем UV координаты напрямую
+            subMesh.uvs.Add(Vector2.zero);
+            subMesh.uvs.Add(new Vector2(width, 0));
+            subMesh.uvs.Add(new Vector2(width, height));
+            subMesh.uvs.Add(new Vector2(0, height));
+        }
+
+        /// <summary>
+        /// УСТАРЕВШИЙ МЕТОД: Создаёт квад (4 вертекса и 2 треугольника)
+        /// Заменён на CreateQuadOptimized для избежания аллокаций
         /// </summary>
         private static void CreateQuad(ref List<Vector3> verts, ref List<int> tris, ref List<Vector2> uvs,
             ref List<Vector3> normals,
@@ -431,8 +616,6 @@ namespace Content.Scripts.Game.Voxels
             uvs.Add(new Vector2(0, height));
         }
 
-
-
         /// <summary>
         /// Добавляет треугольники для квада
         /// </summary>
@@ -445,7 +628,6 @@ namespace Content.Scripts.Game.Voxels
             tris.Add(vertStart + 3);
             tris.Add(vertStart + 2);
         }
-
 
         private static Mesh CreateMultiMaterialMesh(MaterialListObject materialList, IMeshDrawable chunkVolume)
         {
@@ -463,8 +645,8 @@ namespace Content.Scripts.Game.Voxels
             subMeshes.Clear();
 
             // Собираем все треугольники в один массив
-            var allTriangles = new List<int>();
-            var materialIds = new List<int>();
+            allTriangles.Clear();
+            materialIds.Clear();
 
             foreach (var kvp in subMeshDict)
             {
@@ -531,8 +713,6 @@ namespace Content.Scripts.Game.Voxels
 
             return mesh;
         }
-
-
 
         /// <summary>
         /// Создаёт финальный Unity меш

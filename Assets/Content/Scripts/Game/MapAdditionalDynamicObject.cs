@@ -1,5 +1,6 @@
 ﻿using Content.Scripts.Game.Services;
 using Content.Scripts.Game.Voxels;
+using Content.Scripts.Services.Net;
 using UnityEngine;
 using Zenject;
 
@@ -18,9 +19,9 @@ namespace Content.Scripts.Game
             this.dataLoaderService = dataLoaderService;
         }
 
-        public override void Init(MapObjectsService mapObjectsService)
+        public override void Init(MapObjectsService mapObjectsService, int uid, NetService netService)
         {
-            base.Init(mapObjectsService);
+            base.Init(mapObjectsService, uid, netService);
 
             var key = (string)GetKey("item_name");
 

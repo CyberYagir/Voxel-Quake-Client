@@ -13,6 +13,7 @@ namespace Content.Scripts.Game.Scriptable
 
         public MapAdditionalItem GetItemByID(string id)
         {
+            Debug.Log(id);
             var item = items.Find(x => x.ID.ToLower() == id.ToLower().Trim());
 
             if (item == null)

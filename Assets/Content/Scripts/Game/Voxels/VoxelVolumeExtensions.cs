@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using Content.Scripts.Services.Net;
-using LightServer.Base.PlayersModule;
 using UnityEngine;
 using Vector3 = UnityEngine.Vector3;
 using Vector3Int = UnityEngine.Vector3Int;
@@ -46,7 +44,6 @@ namespace Content.Scripts.Game.Voxels
         }
 
         private static Dictionary<int, int> destoryedBlocks = new Dictionary<int, int>();
-        private static Dictionary<NetVector3Int, NetChunkData> netChunksData = new();
         public static Dictionary<int, int> DestroyBlocksInRadius(this VoxelVolume volume, Vector3 hitInfoPoint, float destructionRadius, byte damage)
         {
             destoryedBlocks.Clear();
@@ -97,7 +94,7 @@ namespace Content.Scripts.Game.Voxels
                         isDestroyed = true;
                         material = chunk.BlocksData[index].materialId;
 
-                        AddDestroyedBlockNetPool(chunk.ChunkPos, index, chunk.BlocksData[index]);
+                        volume.AddDestroyedBlockNetPool(chunk.ChunkPos, index, chunk.BlocksData[index]);
                         ModifyChunk(volume, chunk);
                     }
                     return;
@@ -115,35 +112,6 @@ namespace Content.Scripts.Game.Voxels
                 }
             }
         }
-
-        private static void AddDestroyedBlockNetPool(Vector3Int chunkChunkPos, int index, Block block)
-        {
-            NetVector3Int pos = new (chunkChunkPos.x, chunkChunkPos.y, chunkChunkPos.z);
-            if (!netChunksData.ContainsKey(pos))
-            {
-                netChunksData.Add(pos, new NetChunkData(new Dictionary<int, NetBlockData>()));
-            }
-
-            if (!netChunksData[pos].blocks.ContainsKey(index))
-            {
-                netChunksData[pos].blocks.Add(index, new NetBlockData(block.type, block.materialId));
-            }
-            else
-            {
-                netChunksData[pos].blocks[index] = new NetBlockData(block.type, block.materialId);
-            }
-        }
-
-        private static Vector3 RoundVector3(Vector3 vector, int decimalPlaces)
-        {
-            float multiplier = Mathf.Pow(10f, decimalPlaces);
-            return new Vector3(
-                Mathf.Round(vector.x * multiplier) / multiplier,
-                Mathf.Round(vector.y * multiplier) / multiplier,
-                Mathf.Round(vector.z * multiplier) / multiplier
-            );
-        }
-
     
         public static void ModifiedChunksDispose(this VoxelVolume volume)
         {
@@ -159,16 +127,6 @@ namespace Content.Scripts.Game.Voxels
         
         
             modifiedChunks.Clear();
-        }
-
-        public static void ModifiedNetChunksDispose(this VoxelVolume volume, NetServiceBlocks netBlocks, bool isMine)
-        {
-            if (isMine)
-            {
-                netBlocks.RPCRemoveBlock(netChunksData);
-            }
-
-            netChunksData.Clear();
         }
 
     

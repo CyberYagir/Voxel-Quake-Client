@@ -102,6 +102,7 @@ namespace Content.Scripts.Services.Net
             modules.Add(new NetServicePlayers(this, playerConfig));
             modules.Add(new NetServiceProjectiles(this, projectilesConfig, fabric));
             modules.Add(new NetServiceBlocks(this));
+            modules.Add(new NetServiceMapItems(this));
         }
 
 

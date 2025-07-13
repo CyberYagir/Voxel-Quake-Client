@@ -68,7 +68,7 @@ namespace Content.Scripts.Game.Weapons
 
         private void OnTriggerEnter(Collider other)
         {
-            if (netObject.isMine)
+            if (netObject.isMine && !other.isTrigger)
             {
                 Destroy();
             }

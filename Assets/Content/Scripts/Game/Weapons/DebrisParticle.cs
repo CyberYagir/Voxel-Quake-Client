@@ -27,7 +27,7 @@ namespace Content.Scripts.Game.Weapons
             var emission = particleSystem.emission;
 
             var burst = emission.GetBurst(0);
-            burst.count = new ParticleSystem.MinMaxCurve(count);
+            burst.count = new ParticleSystem.MinMaxCurve(count/2f);
 
             emission.SetBurst(0, burst);
             

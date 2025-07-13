@@ -30,7 +30,6 @@ namespace Content.Scripts.Game
             {
                 var deltaPos = oldPlayerPos - transform.position;
                 oldPlayerPos = transform.position;
-                print(deltaPos.magnitude);
 
                 // Вычисляем целевую позицию от базовой позиции
                 Vector3 targetPos = pos + holder.parent.InverseTransformDirection(deltaPos) * moveModify;

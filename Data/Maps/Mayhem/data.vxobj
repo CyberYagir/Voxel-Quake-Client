@@ -789,6 +789,44 @@
         "z": 0.0
       },
       "Data": []
+    },
+    {
+      "ID": "weaponspot_rocket",
+      "Position": {
+        "x": 30.6099434,
+        "y": 15.22,
+        "z": 48.06
+      },
+      "Rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "Data": [
+        {
+          "Key": "reload_time",
+          "Value": 4.0
+        }
+      ]
+    },
+    {
+      "ID": "weaponspot_rail",
+      "Position": {
+        "x": 32.15964,
+        "y": 10.66,
+        "z": 32.34821
+      },
+      "Rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "Data": [
+        {
+          "Key": "reload_time",
+          "Value": 4.0
+        }
+      ]
     }
   ]
 }

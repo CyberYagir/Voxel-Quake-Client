@@ -116,7 +116,7 @@ namespace Content.Scripts.Game
                      }
                      
                      spawnedWeapon.UpdateWeapon();
-                     spawnedWeapon.UpdateWeaponPress(InputService.IsShootPressed);
+                     spawnedWeapon.UpdateWeaponPress(InputService.IsShootPressed, inventory.HasBullets(selectedWeapon));
                 }
             }
             

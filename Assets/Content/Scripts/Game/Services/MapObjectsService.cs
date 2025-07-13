@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Content.Scripts.Game.Interfaces;
 using Content.Scripts.Game.IO;
 using Content.Scripts.Game.Scriptable;
+using Content.Scripts.Services.Net;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Zenject;
@@ -18,6 +19,7 @@ namespace Content.Scripts.Game.Services
         private List<DynamicLight> dynamicLights = new List<DynamicLight>();
         private PrefabSpawnerFabric spawnerFabric;
         private DataLoaderService dataLoaderService;
+        private NetService netService;
 
         public List<IPlayerSpawn> PlayerSpawns => playerSpawns;
 
@@ -25,8 +27,9 @@ namespace Content.Scripts.Game.Services
 
 
         [Inject]
-        private void Construct(PrefabSpawnerFabric spawnerFabric, DataLoaderService dataLoaderService)
+        private void Construct(PrefabSpawnerFabric spawnerFabric, DataLoaderService dataLoaderService, NetService netService)
         {
+            this.netService = netService;
             this.dataLoaderService = dataLoaderService;
             this.spawnerFabric = spawnerFabric;
         }
@@ -56,9 +59,10 @@ namespace Content.Scripts.Game.Services
                     GetPlayerSpawn(it);
                 }
 
+                int serverID = 0;
                 foreach (var spawned in spawnedItems)
                 {
-                    spawned.Init(this);
+                    spawned.Init(this, serverID, netService);
 
                     var dynamicLight = spawned.GetComponent<DynamicLight>();
                     if (dynamicLight != null)
@@ -70,6 +74,8 @@ namespace Content.Scripts.Game.Services
                         }
                         dynamicLights.Add(dynamicLight);
                     }
+
+                    serverID++;
                 }
             }
             

@@ -67,9 +67,25 @@ namespace Content.Scripts.Services.Net
                 case EProjectileType.Gauntlet:
                     SpawnGauntlet(pos, forward, prefab, spawnPoint, ownerID, projectileUID);
                     break;
+                case EProjectileType.Machinegun:
+                    SpawnBullet(pos, forward, prefab, spawnPoint, ownerID, projectileUID);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        private void SpawnBullet(Vector3 pos, Vector3 forward, ProjectileBase prefab, Vector3 spawnPoint, int ownerID, string uid)
+        {
+            var dir = (pos + forward * 500) - spawnPoint;
+            var item = netService.SpawnedFabric.SpawnItem(prefab, spawnPoint)
+                .With(x => x.Init(dir, ownerID, uid))
+                .With(x=>x.SetHitScanPoint(pos, forward))
+                .With(x => AddProjectile(uid, x));
+            item.OnProjectileEnd += delegate
+            {
+                RPCDestroyProjectile(uid, item.transform.position);
+            };
         }
 
         private void SpawnGauntlet(Vector3 pos, Vector3 forward, ProjectileBase prefab, Vector3 spawnPoint, int ownerID, string uid)

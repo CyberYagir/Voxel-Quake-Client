@@ -39,7 +39,7 @@ namespace Content.Scripts.Game.Weapons
             time += Time.deltaTime;
         }
         
-        public virtual void UpdateWeaponPress(bool isDown)
+        public virtual void UpdateWeaponPress(bool isDown, bool isHaveBullets)
         {
             
         }

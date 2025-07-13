@@ -79,7 +79,7 @@ namespace Content.Scripts.Game.Voxels
                 volumeModifications[i].Init(this);
             }
         }
-
+        
 
         private void OnDrawGizmos()
         {

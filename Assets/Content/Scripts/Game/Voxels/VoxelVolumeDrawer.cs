@@ -111,10 +111,14 @@ namespace Content.Scripts.Game.Voxels
                             modifiedMeshes.TryAdd(it, RedrawChunk(it));
                             count++;
 
-                            if (count >= 4)
+                            if (count >= 4 && toRedraw.Count > 10)
                             {
                                 yield return null;
                                 count = 0;
+                            }
+                            else
+                            {
+                                yield return null;
                             }
                         }
                     }

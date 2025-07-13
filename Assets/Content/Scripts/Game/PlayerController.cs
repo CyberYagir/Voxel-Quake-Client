@@ -1,3 +1,4 @@
+using System;
 using Content.Scripts.Game.Interfaces;
 using Content.Scripts.Game.Services;
 using Content.Scripts.Scriptable;
@@ -28,6 +29,7 @@ namespace Content.Scripts.Game
         public Transform Transform => transform;
 
         public NetPlayerController NetController => netPlayerController;
+        public bool IsMine => netObject.isMine;
 
         [Inject]
         private void Construct(PrefabSpawnerFabric spawnerFabric, NetService netService, WeaponsConfigObject weaponsConfig)
@@ -47,7 +49,7 @@ namespace Content.Scripts.Game
             {
                 headBob.DisableCamera();
                 weaponManager.DisableCamera();
-                userInterface.gameObject.SetActive(false);
+                userInterface.Disable();
             }
         }
 
@@ -68,8 +70,15 @@ namespace Content.Scripts.Game
 
                 headBob.Update();
                 movement.Update();
-                weaponMove.Update();
                 weaponManager.Update();
+            }
+        }
+
+        private void LateUpdate()
+        {
+            if (netObject.isMine)
+            {
+                weaponMove.Update();
             }
         }
 

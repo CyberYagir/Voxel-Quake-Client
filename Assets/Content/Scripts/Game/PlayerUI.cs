@@ -12,5 +12,10 @@ namespace Content.Scripts.Game
         {
             uiPlayerWeapons.Init(inventory, weaponsConfig);
         }
+
+        public void Disable()
+        {
+            canvas.gameObject.SetActive(false);
+        }
     }
 }

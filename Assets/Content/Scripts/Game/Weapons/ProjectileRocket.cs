@@ -95,7 +95,9 @@ namespace Content.Scripts.Game.Weapons
 
                 isActive = false;
                 trail.transform.parent = null;
-                gameObject.SetActive(false);
+                Destroy(gameObject);//.SetActive(false);
+                Destroy(trail.gameObject, 3);//.SetActive(false);
+                Destroy(particles.gameObject, 3);//.SetActive(false);
 
                 if (playerService.SpawnedPlayer != null)
                 {

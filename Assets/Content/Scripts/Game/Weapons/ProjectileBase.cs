@@ -44,7 +44,7 @@ namespace Content.Scripts.Game.Weapons
             
         }
 
-        protected void EndProjectile()
+        protected virtual void EndProjectile()
         {
             OnProjectileEnd?.Invoke();
             

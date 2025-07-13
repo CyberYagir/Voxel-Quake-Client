@@ -55,6 +55,7 @@ MonoBehaviour:
   rotator: {fileID: 2089982003133672414}
   jitterer: {fileID: 4812724613288753525}
   spreadAngle: 2
+  muzzleFlash: {fileID: 7988954935664180254}
 --- !u!1 &7756810905992272601
 GameObject:
   m_ObjectHideFlags: 0
@@ -214,6 +215,11 @@ PrefabInstance:
 --- !u!4 &7787435475021801124 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4203605415270902, guid: 7d585d9b529f0594f8569d1bddb79be1, type: 3}
+  m_PrefabInstance: {fileID: 7790216243419463506}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &7988954935664180254 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 198739243078730572, guid: 7d585d9b529f0594f8569d1bddb79be1, type: 3}
   m_PrefabInstance: {fileID: 7790216243419463506}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8842305953728803358

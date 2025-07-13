@@ -42,6 +42,12 @@ namespace Content.Scripts.Game.Weapons
             }).SetLink(gameObject).onComplete += EndProjectile;
         }
 
+        protected override void EndProjectile()
+        {
+            base.EndProjectile();
+            Destroy(gameObject);
+        }
+
         public override void SetHitScanPoint(Vector3 point, Vector3 dir)
         {
             base.SetHitScanPoint(point, dir);

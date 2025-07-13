@@ -11,6 +11,7 @@ namespace Content.Scripts.Game.Weapons
         [SerializeField] private Transform rotator;
         [SerializeField] private Transform jitterer;
         [SerializeField] private float spreadAngle = 5f;
+        [SerializeField] private ParticleSystem muzzleFlash;
         
         private float vel;
 
@@ -29,6 +30,7 @@ namespace Content.Scripts.Game.Weapons
                 {
                     netServiceProjectiles.RPCSpawnProjectile(EProjectileType.Machinegun, camera.transform.position, spreadDirection, hit.point);
                 }
+                muzzleFlash.Play(true);
                 ResetTime();
             }
         }

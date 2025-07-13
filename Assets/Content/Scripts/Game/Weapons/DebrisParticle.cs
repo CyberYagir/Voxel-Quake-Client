@@ -32,6 +32,8 @@ namespace Content.Scripts.Game.Weapons
             emission.SetBurst(0, burst);
             
             particleSystem.Play(true);
+            
+            Destroy(gameObject, 3f);
         }
     }
 }

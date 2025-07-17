@@ -18,8 +18,11 @@ namespace Content.Scripts.Game
             [SerializeField] private CharacterController controller;
             [SerializeField] private Vector3 playerVelocity = Vector3.zero;
 
+            
+            
             private Transform transform;
-
+            private Vector3 inputDir;
+            private bool isJump;
             public void Init(Transform transform)
             {
                 this.transform = transform;
@@ -27,16 +30,21 @@ namespace Content.Scripts.Game
 
             public void Update()
             {
-                Vector3 inputDir = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+                inputDir = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
                 inputDir = Vector3.ClampMagnitude(inputDir, 1);
                 inputDir = transform.TransformDirection(inputDir);
+                isJump = InputService.JumpPressed;
+            }
 
+            public void PhysicsUpdate()
+            {
                 if (controller.isGrounded)
                 {
                     ApplyFriction();
-                    if (InputService.JumpPressed)
+                    if (isJump)
                     {
                         playerVelocity.y = jumpForce;
+                        isJump = false;
                     }
 
                     GroundMove(inputDir);
@@ -76,7 +84,8 @@ namespace Content.Scripts.Game
                         playerVelocity -= projection;
                     }
                 }
-
+                
+                inputDir = Vector3.zero;
             }
 
             void ApplyFriction()
@@ -170,6 +179,11 @@ namespace Content.Scripts.Game
             public Vector3 GetVelocity()
             {
                 return controller.velocity;
+            }
+
+            public void Stop()
+            {
+                inputDir = Vector3.zero;
             }
         }
     }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Content.Scripts.Game.Voxels;
@@ -12,11 +13,19 @@ namespace Content.Scripts.Game.Services
 {
     public class PlayerService : MonoBehaviour
     {
+        public enum EPlayerState
+        {
+            Active,
+            Chat,
+            Pause
+        }
+        
+        
         [SerializeField] private Camera menuCamera;
         [SerializeField] private FreeCameraController freeCamera;
         [SerializeField] private PlayerController player;
         [SerializeField, ReadOnly] private PlayerController spawnedPlayer;
-
+        [SerializeField] private EPlayerState playerState = EPlayerState.Active;
 
         private Dictionary<int, PlayerController> spawnedPlayers = new Dictionary<int, PlayerController>();
         
@@ -27,7 +36,8 @@ namespace Content.Scripts.Game.Services
         private NetServicePlayers netPlayers;
 
         public PlayerController SpawnedPlayer => spawnedPlayer;
-
+        public EPlayerState PlayerState => playerState;
+        public event Action<EPlayerState> OnPlayerStateChange;
 
         [Inject]
         private void Construct(
@@ -62,6 +72,21 @@ namespace Content.Scripts.Game.Services
                     freeCamera.gameObject.SetActive(true);
                     freeCamera.Teleport(spawn);
                     menuCamera.enabled = false;
+                    ChangeState(EPlayerState.Active);
+                }
+            };
+            
+            OnPlayerStateChange += (state) =>
+            {
+                if (state != EPlayerState.Active)
+                {
+                    Cursor.visible = true;
+                    Cursor.lockState = CursorLockMode.None;
+                }
+                else
+                {
+                    Cursor.visible = false;
+                    Cursor.lockState = CursorLockMode.Locked;
                 }
             };
         }
@@ -89,10 +114,17 @@ namespace Content.Scripts.Game.Services
             
             if (netPlayers.LocalPlayerID == ownerId)
             {
+                ChangeState(EPlayerState.Active);
                 menuCamera.gameObject.SetActive(false);
                 freeCamera.gameObject.SetActive(false);
                 spawnedPlayer = createdPlayer;
             }
+        }
+
+        public void ChangeState(EPlayerState state)
+        {
+            playerState = state;
+            OnPlayerStateChange?.Invoke(state);
         }
 
         IEnumerator WaitForRespawn()
@@ -103,7 +135,7 @@ namespace Content.Scripts.Game.Services
                 {
                     if (spawnedPlayer == null)
                     {
-                        if (InputService.IsSpaceDown)
+                        if (InputService.IsSpaceDown && PlayerState == EPlayerState.Active)
                         {
                             var spawn = GetRandomSpawn();
                             netPlayers.RespawnPlayerRPC(spawn.position, spawn.eulerAngles);
@@ -115,17 +147,7 @@ namespace Content.Scripts.Game.Services
                 yield return null;
             }
         }
-
-
-        public void Respawn()
-        {
-       
-            spawnedPlayer = spawnerFabric.SpawnItem(player);
         
-            var spawn = GetRandomSpawn();
-            spawnedPlayer.Teleport(spawn);
-        }
-
         private Transform GetRandomSpawn()
         {
             if (mapObjectsService.PlayerSpawns.Count != 0)

@@ -23,6 +23,12 @@ namespace Content.Scripts.Services.Net
                 this.nickName = nickName;
                 this.isInited = isInited;
             }
+
+            public bool IsInited => isInited;
+
+            public string NickName => nickName;
+
+            public int PlayerId => playerId;
         }
 
         [SerializeField] private List<ListPlayerData> players = new List<ListPlayerData>();
@@ -119,6 +125,7 @@ namespace Content.Scripts.Services.Net
 
             players.Clear();
 
+            Debug.Log(playersCount);
             for (int i = 0; i < playersCount; i++)
             {
                 players.Add(new ListPlayerData(reader.GetInt(), reader.GetString(), reader.GetBool()));
@@ -141,6 +148,16 @@ namespace Content.Scripts.Services.Net
                 new(vel.x, vel.y, vel.z), 
                 cameraX
                 );
+        }
+
+        public bool HasPlayer(int senderID)
+        {
+            return players.Find(x => x.PlayerId == senderID) != null;
+        }
+
+        public string GetPlayerNickName(int senderID)
+        {
+            return players.Find(x => x.PlayerId == senderID).NickName;
         }
     }
 }

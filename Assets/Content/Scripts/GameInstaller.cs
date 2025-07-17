@@ -29,6 +29,7 @@ namespace Content.Scripts
             BindService<MapLoaderService>();
         
             BindService<PlayerService>();
+            BindService<ChatService>();
 
 
         }

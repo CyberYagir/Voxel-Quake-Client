@@ -103,6 +103,7 @@ namespace Content.Scripts.Services.Net
             modules.Add(new NetServiceProjectiles(this, projectilesConfig, fabric));
             modules.Add(new NetServiceBlocks(this));
             modules.Add(new NetServiceMapItems(this));
+            modules.Add(new NetServiceChat(this));
         }
 
 

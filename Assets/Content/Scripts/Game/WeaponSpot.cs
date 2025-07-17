@@ -3,18 +3,24 @@ using System.Collections.Generic;
 using Content.Scripts.Game.Services;
 using Content.Scripts.Scriptable;
 using Content.Scripts.Services.Net;
+using DG.Tweening;
 using UnityEngine;
 
 namespace Content.Scripts.Game
 {
     public class WeaponSpot : MapAdditionalItem
     {
+        private static Collider[] results = new Collider[10];
         [SerializeField] private WeaponDataObject weaponDataObject;
         [SerializeField] private Transform rotator;
         [SerializeField] private float rotateSpeed = 1f;
         
         [SerializeField] private bool isHasWeapon;
 
+        [SerializeField] private float gravityRadius;
+
+
+        private bool falling;
         private float timer = 0f;
         private float reloadTime;
 
@@ -45,6 +51,22 @@ namespace Content.Scripts.Game
                 }
                 rotator.localScale = Vector3.Lerp(rotator.localScale, Vector3.zero, Time.deltaTime * 20f);
             }
+
+            if (!falling)
+            {
+                var overlaps = Physics.OverlapSphereNonAlloc(transform.position, gravityRadius, results, LayerMask.GetMask("Default"), QueryTriggerInteraction.Ignore);
+                if (overlaps <= 0)
+                {
+                    if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, Mathf.Infinity, LayerMask.GetMask("Default"), QueryTriggerInteraction.Ignore))
+                    {
+                        transform.DOMoveY(hit.point.y + 0.1f, 0.5f).SetLink(gameObject).OnComplete(delegate
+                        {
+                            falling = false;
+                        });
+                        falling = true;
+                    }
+                }
+            }
         }
 
         private void OnTriggerStay(Collider other)
@@ -66,8 +88,12 @@ namespace Content.Scripts.Game
         {
             var delta = DateTime.UtcNow - time;
             timer = (float)delta.TotalSeconds;
-            print(delta.TotalSeconds);
             isHasWeapon = false;
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.DrawWireSphere(transform.position, gravityRadius);
         }
     }
 }

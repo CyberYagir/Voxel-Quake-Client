@@ -96,6 +96,7 @@ namespace Content.Scripts.Game.Voxels
         };
 
         private static Dictionary<string, Mesh> meshInstanced = new Dictionary<string, Mesh>(2000);
+        private static Dictionary<string, Material[]> meshInstancedMaterials = new Dictionary<string, Material[]>(2000);
         private static List<IMeshDrawable> modifiedNeighboursChunks = new List<IMeshDrawable>(6);
         private static Dictionary<int, SubMeshData> subMeshDict = new Dictionary<int, SubMeshData>(6);
         private static List<Vector3> allVertices = new List<Vector3>();
@@ -156,6 +157,20 @@ namespace Content.Scripts.Game.Voxels
         /// </summary>
         public static Mesh GenerateMesh(IMeshDrawable chunk, MaterialListObject materials)
         {
+            var hash = GetChunkHashOptimized(chunk);
+            if (meshInstanced.ContainsKey(hash))
+            {
+                chunk.SetMaterials(meshInstancedMaterials[hash]);
+                return meshInstanced[hash];
+            }
+            
+            if (meshInstanced.Count >= 2000)
+            {
+                meshInstanced.Clear();
+                meshInstancedMaterials.Clear();
+                Debug.LogError("Clear Meshes");
+            }
+
             Vector3Int size = chunk.ChunkSize;
             float voxelSize = chunk.VoxelSize;
 
@@ -176,63 +191,64 @@ namespace Content.Scripts.Game.Voxels
                 ProcessDimension(chunk, dimension, size, voxelSize);
             }
 
-            var mesh = CreateMultiMaterialMesh(materials, chunk);
-
-            var hash = GetMeshHash(mesh);
-            if (meshInstanced.ContainsKey(hash))
-            {
-                return meshInstanced[hash];
-            }
-
+            var mesh = CreateMultiMaterialMesh(materials, chunk, hash);
+            
             mesh.name = hash;
-            if (meshInstanced.Count >= 2000)
-            {
-                meshInstanced.Clear();
-                Debug.LogError("Clear Meshes");
-            }
             meshInstanced.Add(hash, mesh);
             
             return mesh;
         }
         
-        static string GetMeshHash(Mesh mesh)
+        public static string GetChunkHashOptimized(IMeshDrawable chunk)
         {
             unchecked
             {
                 ulong hash = 14695981039346656037UL;
                 const ulong fnvPrime = 1099511628211UL;
-        
-                var vertices = mesh.vertices;
-                var triangles = mesh.triangles;
-        
-                hash ^= (ulong)vertices.Length;
-                hash *= fnvPrime;
-                hash ^= (ulong)triangles.Length;
-                hash *= fnvPrime;
-        
-                // Только вершины и треугольники для батчинга
-                for (int i = 0; i < vertices.Length; i++)
-                {
-                    ref readonly var v = ref vertices[i];
-                    // Округляем до 4 знаков для батчинга похожих мешей
-                    uint x = (uint)Mathf.RoundToInt(v.x * 10000f);
-                    uint y = (uint)Mathf.RoundToInt(v.y * 10000f);
-                    uint z = (uint)Mathf.RoundToInt(v.z * 10000f);
             
-                    hash ^= x;
-                    hash *= fnvPrime;
-                    hash ^= y;
-                    hash *= fnvPrime;
-                    hash ^= z;
-                    hash *= fnvPrime;
-                }
-        
-                for (int i = 0; i < triangles.Length; i++)
+                var blocks = chunk.BlocksData;
+                var chunkSize = chunk.ChunkSize;
+            
+                // Хешируем размер чанка
+                hash ^= (ulong)chunkSize.x;
+                hash *= fnvPrime;
+                hash ^= (ulong)chunkSize.y;
+                hash *= fnvPrime;
+                hash ^= (ulong)chunkSize.z;
+                hash *= fnvPrime;
+            
+                // Хешируем только непустые блоки с их позициями
+                for (int x = 0; x < chunkSize.x; x++)
                 {
-                    hash ^= (ulong)triangles[i];
-                    hash *= fnvPrime;
+                    for (int y = 0; y < chunkSize.y; y++)
+                    {
+                        for (int z = 0; z < chunkSize.z; z++)
+                        {
+                            int index = x + y * chunkSize.x + z * chunkSize.x * chunkSize.y;
+                            var block = blocks[index];
+                        
+                            if (block.IsSolid)
+                            {
+                                // Хешируем позицию блока
+                                hash ^= (ulong)x;
+                                hash *= fnvPrime;
+                                hash ^= (ulong)y;
+                                hash *= fnvPrime;
+                                hash ^= (ulong)z;
+                                hash *= fnvPrime;
+                            
+                                // Хешируем данные блока
+                                hash ^= block.type;
+                                hash *= fnvPrime;
+                                hash ^= block.flags;
+                                hash *= fnvPrime;
+                                hash ^= block.materialId;
+                                hash *= fnvPrime;
+                            }
+                        }
+                    }
                 }
-        
+            
                 return hash.ToString("X");
             }
         }
@@ -629,7 +645,8 @@ namespace Content.Scripts.Game.Voxels
             tris.Add(vertStart + 2);
         }
 
-        private static Mesh CreateMultiMaterialMesh(MaterialListObject materialList, IMeshDrawable chunkVolume)
+        private static Mesh CreateMultiMaterialMesh(MaterialListObject materialList, IMeshDrawable chunkVolume,
+            string hash)
         {
             var mesh = new Mesh();
 
@@ -707,6 +724,7 @@ namespace Content.Scripts.Game.Voxels
                 materials[i] = materialList.GetMaterial(materialIds[i]);
             }
 
+            meshInstancedMaterials.Add(hash, materials);
             chunkVolume.SetMaterials(materials);
 
             mesh.RecalculateBounds();

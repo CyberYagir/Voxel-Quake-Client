@@ -28,6 +28,8 @@ namespace Content.Scripts.Services.Net
             [SerializeField] private float timer;
             [SerializeField] private EGameState gameState;
 
+            public event Action<float> OnTimerTick;
+            
             public EGameState GameState => gameState;
 
             public float Timer => timer;
@@ -37,16 +39,19 @@ namespace Content.Scripts.Services.Net
             public void SetMap(string map)
             {
                 mapName = map;
+                OnTimerTick?.Invoke(timer);
             }
 
             public void SetTime(int time)
             {
                 timer = time;
+                OnTimerTick?.Invoke(timer);
             }
             
             public void SetGameState(EGameState state)
             {
                 gameState = state;
+                OnTimerTick?.Invoke(timer);
             }
         }
         
@@ -58,6 +63,8 @@ namespace Content.Scripts.Services.Net
         public string MapName => serverData.MapName;
 
         public bool IsLoaded => isLoaded;
+
+        public ServerData Server => serverData;
 
 
         public event Action OnServerLoaded;

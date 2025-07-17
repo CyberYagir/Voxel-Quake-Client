@@ -6,6 +6,7 @@ using Content.Scripts.Services.Net;
 using UnityEngine;
 using UnityEngine.Serialization;
 using Zenject;
+using Zenject.SpaceFighter;
 
 namespace Content.Scripts.Game
 {
@@ -26,14 +27,16 @@ namespace Content.Scripts.Game
         [SerializeField] private WeaponManager weaponManager;
         
         private NetServiceProjectiles netProjectiles;
+        private PlayerService playerService;
         public Transform Transform => transform;
 
         public NetPlayerController NetController => netPlayerController;
         public bool IsMine => netObject.isMine;
 
         [Inject]
-        private void Construct(PrefabSpawnerFabric spawnerFabric, NetService netService, WeaponsConfigObject weaponsConfig)
+        private void Construct(PrefabSpawnerFabric spawnerFabric, NetService netService, WeaponsConfigObject weaponsConfig, PlayerService playerService)
         {
+            this.playerService = playerService;
             netProjectiles = netService.GetModule<NetServiceProjectiles>();
             
             if (netObject.isMine)
@@ -51,6 +54,15 @@ namespace Content.Scripts.Game
                 weaponManager.DisableCamera();
                 userInterface.Disable();
             }
+
+            playerService.OnPlayerStateChange += (state) =>
+            {
+                if (state != PlayerService.EPlayerState.Active)
+                {
+                    Cursor.visible = true;
+                    Cursor.lockState = CursorLockMode.None;
+                }
+            };
         }
 
         public Vector3 ClosestPoint(Vector3 point)
@@ -62,15 +74,13 @@ namespace Content.Scripts.Game
         {
             if (netObject.isMine)
             {
-                if (InputService.IsShootPressed)
+                if (playerService.PlayerState == PlayerService.EPlayerState.Active)
                 {
-                    Cursor.visible = false;
-                    Cursor.lockState = CursorLockMode.Locked;
+                    headBob.Update();
+                    movement.Update();
+                    weaponManager.Update();
                 }
-
-                headBob.Update();
-                movement.Update();
-                weaponManager.Update();
+                movement.PhysicsUpdate();
             }
         }
 

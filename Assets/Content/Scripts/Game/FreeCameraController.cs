@@ -1,6 +1,7 @@
 using Content.Scripts.Game.Interfaces;
 using Content.Scripts.Game.Services;
 using UnityEngine;
+using Zenject;
 
 namespace Content.Scripts.Game
 {
@@ -50,22 +51,26 @@ namespace Content.Scripts.Game
 
         [SerializeField] private PlayerController.HeadBob headBob;
         [SerializeField] private FreeMovement freeMovement;
+        private PlayerService playerService;
 
         public Transform Transform => transform;
-    
-        private void Awake()
+
+        [Inject]
+        private void Construct(PlayerService playerService)
         {
-            Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Locked;
-        
+            this.playerService = playerService;
+            
             headBob.Init(transform);
             freeMovement.Init(transform);
         }
 
         void Update()
         {
-            headBob.Update();
-            freeMovement.Update();
+            if (playerService.PlayerState == PlayerService.EPlayerState.Active)
+            {
+                headBob.Update();
+                freeMovement.Update();
+            }
         }
 
         public void SetVelocity(Vector3 velocity)

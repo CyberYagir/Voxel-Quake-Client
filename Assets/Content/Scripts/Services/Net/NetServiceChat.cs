@@ -41,6 +41,11 @@ namespace Content.Scripts.Services.Net
             {
                 OnMessageReceived?.Invoke(netServicePlayers.GetPlayerNickName(senderID), message);
             }
+
+            if (senderID == -256)
+            {
+                OnMessageReceived?.Invoke("<color=white>Server</color>", message);
+            }
         }
 
         public void SendMessageRPC(string message)

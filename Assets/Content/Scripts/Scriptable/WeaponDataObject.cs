@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Content.Scripts.Game.Weapons;
+using LightServer.Base.PlayersModule;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -8,6 +9,7 @@ namespace Content.Scripts.Scriptable
     [CreateAssetMenu(menuName = "Create WeaponDataObject", fileName = "WeaponDataObject", order = 0)]
     public class WeaponDataObject : ScriptableObject
     {
+        [SerializeField] private EWeaponType type;
         [SerializeField] private WeaponBase prefab;
         [SerializeField, PreviewField] private Sprite icon;
         [SerializeField] private List<KeyCode> keys;
@@ -33,5 +35,7 @@ namespace Content.Scripts.Scriptable
         public List<KeyCode> Keys => keys;
 
         public bool IsDisplay => isDisplay;
+
+        public EWeaponType Type => type;
     }
 }

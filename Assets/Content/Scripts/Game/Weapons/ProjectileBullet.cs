@@ -19,7 +19,7 @@ namespace Content.Scripts.Game.Weapons
             };
         }
 
-        public override void SetHitScanPoint(Vector3 point, Vector3 dir)
+        public override void SetHitScanPoint(Vector3 point, Vector3 dir, Vector3 endPoint)
         {
             base.SetHitScanPoint(point, dir);
             if (Physics.Raycast(point, dir, out RaycastHit hit, 500, LayerMask.GetMask("Default")))

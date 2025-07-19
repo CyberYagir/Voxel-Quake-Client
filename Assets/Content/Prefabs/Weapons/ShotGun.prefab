@@ -76,6 +76,7 @@ MonoBehaviour:
   - {fileID: 5565025344976394004}
   - {fileID: 4145631515728422509}
   animator: {fileID: 37769529093977253}
+  projectileShotgun: {fileID: 1529895988020209992, guid: df85685a3389bce4d8d01810ee3e0e90, type: 3}
 --- !u!1 &8457272685949632231
 GameObject:
   m_ObjectHideFlags: 0

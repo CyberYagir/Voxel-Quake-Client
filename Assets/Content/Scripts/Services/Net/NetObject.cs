@@ -11,7 +11,9 @@ namespace Content.Scripts.Services.Net
 
 
         public bool isMine => peerID == localPeerID;
-        
+
+        public int PeerID => peerID;
+
         public void Init(int peerID, int localPeerID)
         {
             this.localPeerID = localPeerID;

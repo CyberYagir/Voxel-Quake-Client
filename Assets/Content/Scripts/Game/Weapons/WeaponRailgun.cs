@@ -52,7 +52,16 @@ namespace Content.Scripts.Game.Weapons
             {
                 animator.SetTrigger(HASH_SHOOT_TRIGGER);
                 muzzleFlash.Play(true);
-                netServiceProjectiles.RPCSpawnProjectile(EProjectileType.Rail, camera.transform.position, camera.transform.forward, projectileSpawnPoint.position);
+
+                var endPoint = camera.transform.position + camera.transform.forward * 500;
+                
+                if (Physics.Raycast(camera.transform.position, camera.transform.forward, out RaycastHit hit, 500,
+                        LayerMask.GetMask("Default")))
+                {
+                    endPoint = hit.point;
+                }
+
+                netServiceProjectiles.RPCSpawnProjectile(EProjectileType.Rail, camera.transform.position, camera.transform.forward, projectileSpawnPoint.position, endPoint);
                 ResetTime();
             }
         }

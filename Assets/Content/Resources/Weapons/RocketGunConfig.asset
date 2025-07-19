@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b77a245aad3d24468d82e2067afbed6, type: 3}
   m_Name: RocketGunConfig
   m_EditorClassIdentifier: 
+  type: 2
   prefab: {fileID: 872123330402644351, guid: 2cfe7007b9a70ee45ac2fc21254c86c6, type: 3}
   icon: {fileID: -134069922, guid: 58e81ca797084424dad5b41af666214f, type: 3}
   keys: 3500000071000000

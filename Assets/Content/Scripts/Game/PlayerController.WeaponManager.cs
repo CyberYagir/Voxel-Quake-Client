@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Content.Scripts.Game.Services;
 using Content.Scripts.Game.Weapons;
 using Content.Scripts.Scriptable;
@@ -28,6 +29,9 @@ namespace Content.Scripts.Game
 
             private WeaponDataObject selectedWeapon;
             private WeaponBase spawnedWeapon;
+
+            public event Action<WeaponDataObject> OnSelectedWeaponChange;
+            
             public void Init(PrefabSpawnerFabric prefabSpawnerFabric, NetServiceProjectiles netServiceProjectiles, WeaponsConfigObject weaponsConfig, PlayerInventory inventory)
             {
                 this.inventory = inventory;
@@ -66,6 +70,7 @@ namespace Content.Scripts.Game
                 }).SetEase(switchCurve).onComplete += delegate
                 {
                     isWeaponSwitch = false;
+                    OnSelectedWeaponChange?.Invoke(weaponDataObject);
                 };
             }
 

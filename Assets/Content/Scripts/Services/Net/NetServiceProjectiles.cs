@@ -52,6 +52,7 @@ namespace Content.Scripts.Services.Net
             var pos = PacketsManager.ReadVector(reader).Convert();
             var forward = PacketsManager.ReadVector(reader).Convert();
             var spawnPoint = PacketsManager.ReadVector(reader).Convert();
+            var endPoint = PacketsManager.ReadVector(reader).Convert();
 
 
             var prefab = projectilesConfig.GetProjectilePrefab(projectileType);
@@ -62,7 +63,7 @@ namespace Content.Scripts.Services.Net
                     SpawnRocket(pos, forward, prefab, spawnPoint, ownerID, projectileUID);
                     break;
                 case EProjectileType.Rail:
-                    SpawnRail(pos, forward, prefab, spawnPoint, ownerID, projectileUID);
+                    SpawnRail(pos, forward, prefab, spawnPoint, ownerID, projectileUID, endPoint);
                     break;
                 case EProjectileType.Gauntlet:
                     SpawnGauntlet(pos, forward, prefab, spawnPoint, ownerID, projectileUID);
@@ -121,8 +122,7 @@ namespace Content.Scripts.Services.Net
             }
         }
 
-        private void SpawnRail(Vector3 pos, Vector3 forward, ProjectileBase prefab, Vector3 spawnPoint, int ownerID,
-            string uid)
+        private void SpawnRail(Vector3 pos, Vector3 forward, ProjectileBase prefab, Vector3 spawnPoint, int ownerID, string uid, Vector3 endPoint)
         {
             var raycast = Physics.Raycast(pos, forward, out RaycastHit raycastHit, 500, LayerMask.GetMask("Default"));
             
@@ -134,7 +134,7 @@ namespace Content.Scripts.Services.Net
             
             var item = netService.SpawnedFabric.SpawnItem(prefab, spawnPoint)
                 .With(x => x.Init(dir, ownerID, uid))
-                .With(x=>x.SetHitScanPoint(pos, forward))
+                .With(x=>x.SetHitScanPoint(pos, forward, endPoint))
                 .With(x => AddProjectile(uid, x));
             item.OnProjectileEnd += delegate
             {
@@ -167,9 +167,9 @@ namespace Content.Scripts.Services.Net
             netService.OnCommandReceived -= NetServiceOnOnCommandReceived;
         }
 
-        public void RPCSpawnProjectile(EProjectileType id, Vector3 camPos, Vector3 camForward, Vector3 spawnPoint)
+        public void RPCSpawnProjectile(EProjectileType id, Vector3 camPos, Vector3 camForward, Vector3 spawnPoint, Vector3 endPoint)
         {
-            netService.Peer.RPCSpawnProjectile(id, camPos.Convert(), camForward.Convert(), spawnPoint.Convert());
+            netService.Peer.RPCSpawnProjectile(id, camPos.Convert(), camForward.Convert(), spawnPoint.Convert(), endPoint.Convert());
         }
 
         public void RPCDestroyProjectile(string uid, Vector3 pos)

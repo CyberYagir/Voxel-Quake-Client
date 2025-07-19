@@ -48,17 +48,11 @@ namespace Content.Scripts.Game.Weapons
             Destroy(gameObject);
         }
 
-        public override void SetHitScanPoint(Vector3 point, Vector3 dir)
+        public override void SetHitScanPoint(Vector3 point, Vector3 dir, Vector3 endPoint)
         {
-            base.SetHitScanPoint(point, dir);
-            if (Physics.Raycast(point, dir, out RaycastHit hit, 500, LayerMask.GetMask("Default")))
-            {
-                line.SetPosition(1, hit.point);
-            }
-            else
-            {
-                line.SetPosition(1, transform.position + transform.forward * 500);
-            }
+            base.SetHitScanPoint(point, dir, endPoint);
+            
+            line.SetPosition(1, endPoint);
             
             removeVoxelPoint.transform.position = line.GetPosition(1);
             removeVoxelPoint.forward = line.GetPosition(1) - line.GetPosition(0);

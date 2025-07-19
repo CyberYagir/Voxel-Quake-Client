@@ -15,17 +15,15 @@ namespace Content.Scripts.Game
     {
         [SerializeField] private NetObject netObject;
         [SerializeField] private NetPlayerController netPlayerController;
-        [Space]
-        [SerializeField] private PlayerInventory inventory;
-         [SerializeField] private PlayerUI userInterface;
-        [Space]
-        [SerializeField] private CapsuleCollider capsuleCollider;
-        [Space]
-        [SerializeField] private HeadBob headBob;
+        [SerializeField] private PlayerAnimator playerAnimator;
+        [Space] [SerializeField] private PlayerInventory inventory;
+        [SerializeField] private PlayerUI userInterface;
+        [Space] [SerializeField] private CapsuleCollider capsuleCollider;
+        [Space] [SerializeField] private HeadBob headBob;
         [SerializeField] private Movement movement;
         [SerializeField] private WeaponMove weaponMove;
         [SerializeField] private WeaponManager weaponManager;
-        
+
         private NetServiceProjectiles netProjectiles;
         private PlayerService playerService;
         public Transform Transform => transform;
@@ -33,12 +31,15 @@ namespace Content.Scripts.Game
         public NetPlayerController NetController => netPlayerController;
         public bool IsMine => netObject.isMine;
 
+        public PlayerAnimator PlayerAnimator => playerAnimator;
+
         [Inject]
-        private void Construct(PrefabSpawnerFabric spawnerFabric, NetService netService, WeaponsConfigObject weaponsConfig, PlayerService playerService)
+        private void Construct(PrefabSpawnerFabric spawnerFabric, NetService netService,
+            WeaponsConfigObject weaponsConfig, PlayerService playerService)
         {
             this.playerService = playerService;
             netProjectiles = netService.GetModule<NetServiceProjectiles>();
-            
+
             if (netObject.isMine)
             {
                 headBob.Init(transform);
@@ -47,6 +48,11 @@ namespace Content.Scripts.Game
                 inventory.Init();
                 userInterface.Init(inventory, weaponsConfig);
                 weaponManager.Init(spawnerFabric, netProjectiles, weaponsConfig, inventory);
+
+                weaponManager.OnSelectedWeaponChange += o =>
+                {
+                    netService.GetModule<NetServicePlayers>().RPCChangeWeapon(o.Type);
+                };
             }
             else
             {
@@ -80,6 +86,7 @@ namespace Content.Scripts.Game
                     movement.Update();
                     weaponManager.Update();
                 }
+
                 movement.PhysicsUpdate();
             }
         }

@@ -20,8 +20,13 @@ namespace Content.Scripts.Services.Net
         private Vector3 nextPosition;
         private Vector3 nextRot;
         private Vector3 nextVel;
+        private Vector3 netVel;
         private PlayerController controller;
         private float nextCameraX;
+
+        public Vector3 Velocity => netVel;
+
+        public float NextCameraX => nextCameraX;
 
         [Inject]
         private void Construct(NetService netService)
@@ -70,6 +75,7 @@ namespace Content.Scripts.Services.Net
             nextPosition = pos;
             nextRot = rot;
             nextVel = vel;
+            netVel = vel;
         }
     }
 }

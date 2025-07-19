@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b77a245aad3d24468d82e2067afbed6, type: 3}
   m_Name: GuntletConfig
   m_EditorClassIdentifier: 
+  type: 1
   prefab: {fileID: 1195886699169975120, guid: 786514acf8a39d44093b9e019142421d, type: 3}
   icon: {fileID: 0}
   keys: 31000000

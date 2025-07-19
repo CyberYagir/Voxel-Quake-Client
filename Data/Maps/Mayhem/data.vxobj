@@ -1,7 +1,7 @@
 {
   "Items": [
     {
-      "ID": "bloodrun_map_lamp_1",
+      "ID": "bloodrun_map_lamp_3",
       "Position": {
         "x": 10.788,
         "y": 16.53,
@@ -188,7 +188,7 @@
       ]
     },
     {
-      "ID": "bloodrun_map_lamp_1",
+      "ID": "bloodrun_map_lamp_3",
       "Position": {
         "x": 8.57,
         "y": 19.28,
@@ -247,7 +247,7 @@
       ]
     },
     {
-      "ID": "bloodrun_map_lamp_1",
+      "ID": "bloodrun_map_lamp_3",
       "Position": {
         "x": 37.27,
         "y": 15.43,
@@ -356,7 +356,7 @@
       ]
     },
     {
-      "ID": "bloodrun_map_lamp_1",
+      "ID": "bloodrun_map_lamp_3",
       "Position": {
         "x": 43.55,
         "y": 8.54,
@@ -403,7 +403,7 @@
       ]
     },
     {
-      "ID": "bloodrun_map_lamp_1",
+      "ID": "bloodrun_map_lamp_3",
       "Position": {
         "x": 43.55,
         "y": 8.54,
@@ -450,7 +450,7 @@
       ]
     },
     {
-      "ID": "bloodrun_map_lamp_1",
+      "ID": "bloodrun_map_lamp_3",
       "Position": {
         "x": 43.55,
         "y": 8.54,

@@ -39,7 +39,7 @@ namespace Content.Scripts.Game.Weapons
             
         }
 
-        public virtual void SetHitScanPoint(Vector3 point, Vector3 dir)
+        public virtual void SetHitScanPoint(Vector3 point, Vector3 dir, Vector3 endPoint = default)
         {
             
         }

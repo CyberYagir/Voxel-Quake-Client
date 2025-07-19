@@ -5,6 +5,7 @@ using Content.Scripts.Game.Voxels;
 using Content.Scripts.Scriptable;
 using Content.Scripts.Services;
 using Content.Scripts.Services.Net;
+using LightServer.Base.PlayersModule;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Zenject;
@@ -56,6 +57,7 @@ namespace Content.Scripts.Game.Services
             netPlayers.OnRespawnPlayer += CMDRespawnPlayerRecived;
             netPlayers.OnUpdatePlayerTransform += CMDUpdatePlayerTransform;
             netPlayers.OnDestroyPlayer += CMDPlayerDestroy;
+            netPlayers.OnPlayerChangeWeapon += CMDChangeWeapon;
   
 
 
@@ -89,6 +91,14 @@ namespace Content.Scripts.Game.Services
                     Cursor.lockState = CursorLockMode.Locked;
                 }
             };
+        }
+
+        private void CMDChangeWeapon(int ownerID, EWeaponType weapon)
+        {
+            if (spawnedPlayers.ContainsKey(ownerID))
+            {
+                spawnedPlayers[ownerID].PlayerAnimator.ChangeWeapon(weapon);
+            }
         }
 
         private void CMDPlayerDestroy(int ownerId)

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b77a245aad3d24468d82e2067afbed6, type: 3}
   m_Name: RailGunConfig
   m_EditorClassIdentifier: 
+  type: 3
   prefab: {fileID: 6201270519169925107, guid: 654b7eb40397fdf4db44177b27487369, type: 3}
   icon: {fileID: 93521222, guid: 58e81ca797084424dad5b41af666214f, type: 3}
   keys: 3700000072000000

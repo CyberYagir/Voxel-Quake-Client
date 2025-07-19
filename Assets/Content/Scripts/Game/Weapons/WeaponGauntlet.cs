@@ -21,7 +21,7 @@ namespace Content.Scripts.Game.Weapons
             {
                 if (Physics.Raycast(camera.transform.position, camera.transform.forward, out RaycastHit hit, maxDistance, LayerMask.GetMask("Default")))
                 {
-                    netServiceProjectiles.RPCSpawnProjectile(EProjectileType.Gauntlet, camera.transform.position, camera.transform.forward, hit.point);
+                    netServiceProjectiles.RPCSpawnProjectile(EProjectileType.Gauntlet, camera.transform.position, camera.transform.forward, hit.point, Vector3.zero);
                 }
                 ResetTime();
             }

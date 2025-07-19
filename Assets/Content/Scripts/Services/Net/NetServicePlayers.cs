@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Content.Scripts.Scriptable;
+using LightServer.Base.PlayersModule;
 using LiteNetLib;
 using ServerLibrary.Structs;
 using UnityEngine;
@@ -16,12 +17,14 @@ namespace Content.Scripts.Services.Net
             [SerializeField] private int playerId;
             [SerializeField] private string nickName;
             [SerializeField] private bool isInited;
+            [SerializeField] private Color color;
 
-            public ListPlayerData(int playerId, string nickName, bool isInited)
+            public ListPlayerData(int playerId, string nickName, bool isInited, Color color)
             {
                 this.playerId = playerId;
                 this.nickName = nickName;
                 this.isInited = isInited;
+                this.color = color;
             }
 
             public bool IsInited => isInited;
@@ -29,6 +32,8 @@ namespace Content.Scripts.Services.Net
             public string NickName => nickName;
 
             public int PlayerId => playerId;
+
+            public Color Color => color;
         }
 
         [SerializeField] private List<ListPlayerData> players = new List<ListPlayerData>();
@@ -39,6 +44,7 @@ namespace Content.Scripts.Services.Net
         public event Action<Vector3, Vector3, int> OnRespawnPlayer;
         public event Action<Vector3, Vector3, Vector3, float, int> OnUpdatePlayerTransform;
         public event Action<int> OnDestroyPlayer;
+        public event Action<int, EWeaponType> OnPlayerChangeWeapon;
 
 
         public NetServicePlayers(NetService netService, PlayerConfigObject playerConfigObject) : base(netService)
@@ -73,7 +79,19 @@ namespace Content.Scripts.Services.Net
                 case ECMDName.DestroyPlayer:
                     HandleCMDDestroyPlayer(reader);
                     break;
+                
+                case ECMDName.ChangeWeapon:
+                    HandleCMDChangeWeapon(reader);
+                    break;
             }
+        }
+
+        private void HandleCMDChangeWeapon(NetPacketReader reader)
+        {
+            var weapon = (EWeaponType)reader.GetByte();
+            var ownerID = reader.GetInt();
+
+            OnPlayerChangeWeapon?.Invoke(ownerID, weapon);
         }
 
         private void HandleCMDDestroyPlayer(NetPacketReader reader)
@@ -115,7 +133,8 @@ namespace Content.Scripts.Services.Net
 
         private void ListenerOnPeerConnectedEvent(NetPeer peer)
         {
-            peer.RPCInitPlayer(playerConfigObject.PlayerName);
+            ColorUtility.TryParseHtmlString(playerConfigObject.PlayerColor, out Color color);
+            peer.RPCInitPlayer(playerConfigObject.PlayerName, new NetVector3(color.r, color.g, color.b));
         }
 
 
@@ -125,10 +144,16 @@ namespace Content.Scripts.Services.Net
 
             players.Clear();
 
-            Debug.Log(playersCount);
             for (int i = 0; i < playersCount; i++)
             {
-                players.Add(new ListPlayerData(reader.GetInt(), reader.GetString(), reader.GetBool()));
+                var id = reader.GetInt();
+                var nickName = reader.GetString();
+                var isInited = reader.GetBool();
+                
+                var netColor = PacketsManager.ReadVector(reader);
+                var color = new Color(netColor.x, netColor.y, netColor.z, 1);
+                
+                players.Add(new ListPlayerData(id, nickName, isInited, color));
             }
         }
 
@@ -158,6 +183,22 @@ namespace Content.Scripts.Services.Net
         public string GetPlayerNickName(int senderID)
         {
             return players.Find(x => x.PlayerId == senderID).NickName;
+        }
+
+        public void RPCChangeWeapon(EWeaponType objType)
+        {
+            netService.Peer.RPCChangeWeapon(objType);
+        }
+
+        public Color GetPlayerColor(int netObjectPeerID)
+        {
+            var player = players.Find(x => x.PlayerId == netObjectPeerID);
+            if (player != null)
+            {
+                return player.Color;
+            }
+
+            return Color.gray;
         }
     }
 }

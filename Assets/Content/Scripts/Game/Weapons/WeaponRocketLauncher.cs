@@ -14,7 +14,7 @@ namespace Content.Scripts.Game.Weapons
             {
                 animator.SetTrigger(HASH_SHOOT_TRIGGER);
                 muzzleFlash.Play(true);
-                netServiceProjectiles.RPCSpawnProjectile(EProjectileType.Rocket, camera.transform.position, camera.transform.forward, projectileSpawnPoint.position);
+                netServiceProjectiles.RPCSpawnProjectile(EProjectileType.Rocket, camera.transform.position, camera.transform.forward, projectileSpawnPoint.position,Vector3.zero);
                 ResetTime();
             }
         }

@@ -28,7 +28,7 @@ namespace Content.Scripts.Game.Weapons
                 
                 if (Physics.Raycast(camera.transform.position, spreadDirection, out RaycastHit hit, Mathf.Infinity, LayerMask.GetMask("Default")))
                 {
-                    netServiceProjectiles.RPCSpawnProjectile(EProjectileType.Machinegun, camera.transform.position, spreadDirection, hit.point);
+                    netServiceProjectiles.RPCSpawnProjectile(EProjectileType.Machinegun, camera.transform.position, spreadDirection, hit.point, Vector3.zero);
                 }
                 muzzleFlash.Play(true);
                 ResetTime();

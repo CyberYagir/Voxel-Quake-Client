@@ -1,24 +1,22 @@
 ﻿using Content.Scripts.Game.Voxels;
 using Content.Scripts.Services.Net;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Content.Scripts.Game.Weapons
 {
-    public class ProjectileRocket : ProjectileBase
+    public class ProjectileRocket : ProjectileExplosive
     {
         [SerializeField] private GameObject particles;
         [SerializeField] private DebrisParticle debris;
         [SerializeField] private GameObject trail;
         [SerializeField] private Rigidbody rb;
-        [SerializeField] private float rocketSpeed = 10f;
-        [SerializeField] private int rocketDamage = 10;
-        [SerializeField] private float radius = 3f;
-        [SerializeField] private float force;
-        [SerializeField] private float forceRadius;
+        [SerializeField] private float speed = 10f;
+        
+
 
         private float timer;
 
-        private bool isActive = true;
         private Vector3 endPos; 
         private Vector3 startPos; 
         public override void Init(Vector3 dir, int ownerID, string uid)
@@ -44,7 +42,7 @@ namespace Content.Scripts.Game.Weapons
             Debug.DrawLine(startPos, endPos, Color.red);
             if (endPos != default)
             {
-                var time = Vector3.Distance(startPos, endPos) / rocketSpeed;
+                var time = Vector3.Distance(startPos, endPos) / speed;
                 timer += Time.fixedDeltaTime;
                 
                 var percent = timer / time;
@@ -62,26 +60,19 @@ namespace Content.Scripts.Game.Weapons
             }
             else
             {
-                rb.MovePosition(transform.position +  transform.forward * rocketSpeed * Time.fixedDeltaTime);
+                rb.MovePosition(transform.position +  transform.forward * speed * Time.fixedDeltaTime);
             }
         }
 
-        private void OnTriggerEnter(Collider other)
-        {
-            if (netObject.isMine && !other.isTrigger)
-            {
-                Destroy();
-            }
-        }
 
-        private void Destroy()
+        public override void Destroy()
         {
             if (isActive)
             {
                 particles.transform.parent = null;
                 particles.transform.up = startPos - transform.position;
                 particles.gameObject.SetActive(true);
-                var destroyed = voxelVolume.DestroyBlocksInRadius(transform.position, radius, (byte)rocketDamage);
+                var destroyed = voxelVolume.DestroyBlocksInRadius(transform.position, destroyData.Radius, (byte)destroyData.Damage);
                 foreach (var keyValuePair in destroyed)
                 {
                     var deb = prefabSpawnerFabric.SpawnItem(debris, transform.position, transform.rotation);
@@ -99,44 +90,10 @@ namespace Content.Scripts.Game.Weapons
                 Destroy(trail.gameObject, 3);//.SetActive(false);
                 Destroy(particles.gameObject, 3);//.SetActive(false);
 
-                if (playerService.SpawnedPlayer != null)
-                {
-                    var closestPlayerPoint = playerService.SpawnedPlayer.ClosestPoint(transform.position);
-
-                    var distance = Vector3.Distance(transform.position, closestPlayerPoint);
-
-                    if (distance <= forceRadius)
-                    {
-                        var percent = 1 - (distance / forceRadius);
-
-                        var targetForce = percent * force;
-
-                        playerService.SpawnedPlayer.AddVelocity((closestPlayerPoint - transform.position).normalized *
-                                                                targetForce);
-                    }
-                }
+                AddForceToPlayer();
 
 
-                for (var i = 0; i < voxelVolume.DynamicChunks.Count; i++)
-                {
-                    var ragdoll = voxelVolume.DynamicChunks[i].GetComponent<DynamicChunkRagdoll>();
-                    if (ragdoll)
-                    {
-                        var closestPlayerPoint = ragdoll.GetClosestPoint(transform.position);
-
-                        var distance = Vector3.Distance(transform.position, closestPlayerPoint);
-
-                        if (distance <= radius)
-                        {
-                            var percent = 1 - (distance / forceRadius);
-
-                            var targetForce = percent * force;
-
-                            ragdoll.AddVelocity((closestPlayerPoint - transform.position).normalized * targetForce,
-                                transform.position);
-                        }
-                    }
-                }
+                DestroyDynamicChunks();
 
 
                 if (netObject.isMine)
@@ -146,16 +103,16 @@ namespace Content.Scripts.Game.Weapons
             }
         }
 
-        public override void DestroyProjectile()
-        {
-            Destroy();
-        }
+        
+
+
+
 
 
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(transform.position, radius);
+            Gizmos.DrawWireSphere(transform.position, destroyData.Radius);
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(transform.position, forceRadius);
         }

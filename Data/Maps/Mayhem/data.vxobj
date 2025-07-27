@@ -846,6 +846,25 @@
           "Value": 4.0
         }
       ]
+    },
+    {
+      "ID": "weaponspot_tribolt",
+      "Position": {
+        "x": 24.17,
+        "y": 14.8000011,
+        "z": 63.02
+      },
+      "Rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "Data": [
+        {
+          "Key": "reload_time",
+          "Value": 4.0
+        }
+      ]
     }
   ]
 }

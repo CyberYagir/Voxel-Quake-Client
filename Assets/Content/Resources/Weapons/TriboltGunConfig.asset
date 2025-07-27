@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3b77a245aad3d24468d82e2067afbed6, type: 3}
-  m_Name: ShotGunConfig
+  m_Name: TriboltGunConfig
   m_EditorClassIdentifier: 
-  type: 4
-  prefab: {fileID: 1410892220333850257, guid: e1da01729b6b8c941a95d312666f9b88, type: 3}
-  icon: {fileID: -1333720912, guid: 58e81ca797084424dad5b41af666214f, type: 3}
-  keys: 330000007a000000
+  type: 5
+  prefab: {fileID: 7015922452249787976, guid: a42fd0f639955bd4fb8a6afa2e7c73e8, type: 3}
+  icon: {fileID: 1944139256, guid: 58e81ca797084424dad5b41af666214f, type: 3}
+  keys: 3600000078000000
   bullets: 10
   bulletsAdd: 5
   maxBullets: 25

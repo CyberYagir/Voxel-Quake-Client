@@ -104,10 +104,12 @@ MonoBehaviour:
   trail: {fileID: 2421688983760375639}
   rb: {fileID: 4958907329497569317}
   rocketSpeed: 25
-  rocketDamage: 50
-  radius: 1
   force: 25
   forceRadius: 2
+  destroyData:
+    radius: 1
+    damage: 50
+    point: {fileID: 2421842443979228631}
 --- !u!114 &6451568660191046814
 MonoBehaviour:
   m_ObjectHideFlags: 0

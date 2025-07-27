@@ -74,6 +74,9 @@ namespace Content.Scripts.Services.Net
                 case EProjectileType.Shotgun:
                     SpawnBullet(pos, forward, prefab, spawnPoint, ownerID, projectileUID);
                     break;
+                case EProjectileType.Tribolt:
+                    SpawnRocket(pos, forward, prefab, spawnPoint, ownerID, projectileUID);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }

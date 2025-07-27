@@ -50,4 +50,81 @@ namespace Content.Scripts.Game.Weapons
             
         }
     }
+
+    public abstract class ProjectileExplosive : ProjectileBase
+    {
+        [SerializeField] protected float force;
+        [SerializeField] protected float forceRadius;
+        [SerializeField] protected ProjectileRail.RadiusData destroyData;
+
+        protected bool isActive = true;
+        
+        public override void DestroyProjectile()
+        {
+            Destroy();
+        }
+        
+        private void OnTriggerEnter(Collider other)
+        {
+            if (netObject.isMine && !other.isTrigger)
+            {
+                OnTriggered(other);
+            }
+        }
+
+        public virtual void OnTriggered(Collider other)
+        {
+            Destroy();
+        }
+
+        public virtual void Destroy()
+        {
+            
+        }
+        
+        protected void AddForceToPlayer()
+        {
+            if (playerService.SpawnedPlayer != null)
+            {
+                var closestPlayerPoint = playerService.SpawnedPlayer.ClosestPoint(transform.position);
+
+                var distance = Vector3.Distance(transform.position, closestPlayerPoint);
+
+                if (distance <= forceRadius)
+                {
+                    var percent = 1 - (distance / forceRadius);
+
+                    var targetForce = percent * force;
+
+                    playerService.SpawnedPlayer.AddVelocity((closestPlayerPoint - transform.position).normalized *
+                                                            targetForce);
+                }
+            }
+        }
+        
+        protected void DestroyDynamicChunks()
+        {
+            for (var i = 0; i < voxelVolume.DynamicChunks.Count; i++)
+            {
+                var ragdoll = voxelVolume.DynamicChunks[i].GetComponent<DynamicChunkRagdoll>();
+                if (ragdoll)
+                {
+                    var closestPlayerPoint = ragdoll.GetClosestPoint(transform.position);
+
+                    var distance = Vector3.Distance(transform.position, closestPlayerPoint);
+
+                    if (distance <= destroyData.Radius)
+                    {
+                        var percent = 1 - (distance / forceRadius);
+
+                        var targetForce = percent * force;
+
+                        ragdoll.AddVelocity((closestPlayerPoint - transform.position).normalized * targetForce,
+                            transform.position);
+                    }
+                }
+            }
+        }
+
+    }
 }
